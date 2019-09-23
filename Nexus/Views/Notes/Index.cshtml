@@ -1,0 +1,17 @@
+﻿@using Nexus.Models
+@model Nexus.Controllers.NoteViewModel
+@{
+    ViewData["Title"] = "Nexus";
+}
+
+@if (Model?.Notes != null)
+{
+    foreach (var note in Model.Notes)
+    {
+        await Html.RenderPartialAsync("_notePartialView", note);
+    }
+}
+
+@{
+    await Html.RenderPartialAsync("_pager", new PagerInfo { Controller = "Notes", Action = "Index", TotalPages = Model.Notes?.TotalPages ?? 0 });
+}

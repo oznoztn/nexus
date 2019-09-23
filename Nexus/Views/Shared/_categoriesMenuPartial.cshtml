@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Tuple<CategoryDto, int>>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    bool isAdministratorLoggedIn = HttpContextAccessor.HttpContext.User.IsInRole("Administrator");
+}
+
+@if (Model.Any())
+{
+    <ul class="categories">
+        @foreach (var item in Model.ToArray())
+        {
+            if (item.Item1.IsVisible)
+            {
+                <li x-controller="category" x-selected-li-class="side-nav-selection" x-slug-to-match="@item.Item1.Slug">
+                    <a asp-controller="category" asp-action="category" asp-route-slug="@item.Item1.Slug">@item.Item1.Title (@item.Item2)</a>
+                </li>
+            }
+            else
+            {
+                if (isAdministratorLoggedIn)
+                {
+                    <li x-controller="category" x-selected-li-class="side-nav-selection" x-slug-to-match="@item.Item1.Slug" >
+                        <a class="hidden-title" asp-controller="category" asp-action="category" asp-route-slug="@item.Item1.Slug">@item.Item1.Title (@item.Item2)</a>
+                    </li>
+                }
+            }
+        }
+    </ul>
+}

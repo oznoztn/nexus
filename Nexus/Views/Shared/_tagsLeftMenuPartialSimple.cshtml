@@ -1,0 +1,26 @@
+﻿@using Nexus
+@model IEnumerable<TagDto>
+
+@using Microsoft.AspNetCore.Http
+@using Nexus.Shared
+@inject IHttpContextAccessor HttpContextAccessor
+
+@if (Model.Any())
+{
+    <div class="tag-cloud">
+        @foreach (var item in Model)
+        {
+            if (item.IsHidden)
+            {
+                if (HttpContextAccessor.HttpContext.User.IsInRole("Administrator"))
+                {
+                    <a href="/tags/@Slug.Create(item.Title)" class="hidden-title">@item.Title</a>
+                }
+            }
+            else
+            {
+                <a href="/tags/@Slug.Create(item.Title)">@item.Title</a>
+            }
+        }
+    </div>
+}

@@ -1,0 +1,38 @@
+﻿@using System.Globalization
+@model List<DateTime>
+<h5>Archive</h5>
+<ul>
+    @{
+        var e = from n in Model group n by n.Year
+            into yearGroups
+            select new
+            {
+                Year = yearGroups.Key,
+                Months =
+                    from m in yearGroups
+                    group m by m.Month
+                    into monthGroup
+                    select new
+                    {
+                        Month = monthGroup.Key,
+                        NoteCount = monthGroup.Count()
+                    }
+            };
+
+        var result = e.ToList();
+
+
+        foreach (var yearGroup in result)
+        {
+            <li>
+                @yearGroup.Year
+                <ul id="monthsUl" class="li" class="inline-ul" style="padding-left: 28px">
+                    @foreach (var month in yearGroup.Months.ToList())
+                    {
+                        <li><a href="@Url.Action("Archive", "Notes", new { year= yearGroup.Year, month = month.Month})">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month.Month) (@month.NoteCount)</a></li>
+                    }
+                </ul>
+            </li>             
+        }
+    }
+</ul>

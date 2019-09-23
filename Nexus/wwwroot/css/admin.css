@@ -1,0 +1,17 @@
+﻿.alert {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.alert .close {
+    top: 5px;
+}
+
+.alert-success {
+    background-color: #17b76d !important;
+    border-color: #02a91e;
+}
+
+.treeview-menu > li > a > .far {
+    width: 20px;
+}

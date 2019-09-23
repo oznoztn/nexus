@@ -1,0 +1,156 @@
+﻿@model List<CourseGroup>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = $"Courses - Nexus";
+
+    bool isCurrentUserIsInAdministratorRole = HttpContextAccessor.HttpContext.User.IsInRole("Administrator");
+    bool isThereSomethingToShow = Model.Any(group => group.Courses.Any(c => c.IsVisible));
+}
+@section PageLevelScriptsTop
+{
+    <style>
+        .course-link {
+            font-size: 9px;
+        }
+    </style>
+}
+
+<h4>Courses</h4>
+@if (isThereSomethingToShow || isCurrentUserIsInAdministratorRole)
+{
+    <em>Courses I took:</em>
+
+    foreach (CourseGroup group in Model)
+    {
+        <h5>@group.CategoryTitle</h5>
+        foreach (CourseDto course in group.Courses)
+        {
+            var courseHasContainerCategory = course.CategoryId.HasValue && course.CategoryId != 0;
+            if (isCurrentUserIsInAdministratorRole)
+            {
+                // ADMIN
+                if (course.IsVisible)
+                {
+                    if (courseHasContainerCategory)
+                    {
+                        if (course.IsCategoryVisible)
+                        {
+                            <p>
+                                <span>
+                                    <a asp-controller="category" asp-action="category" asp-route-slug="@course.CategorySlug">@course.Title</a>
+                                </span>
+                                <span class="course-link">
+                                    <a href="@course.Url" target="_blank">[Course site]</a>
+                                </span>
+                            </p>
+
+                        }
+                        else
+                        {
+                            <p>
+                                <span>
+                                    <a class="hidden-title" asp-controller="category" asp-action="category" asp-route-slug="@course.CategorySlug">@course.Title</a> 
+                                </span>
+                                <span class="course-link">
+                                    <a href="@course.Url" target="_blank">[Course site]</a>
+                                </span>
+                            </p>
+                        }
+                    }
+                    else
+                    {
+                        <p>
+                            <span>
+                                @course.Title
+                            </span>
+                            <span class="course-link">
+                                <a href="@course.Url" target="_blank">[Course site]</a>
+                            </span>
+                        </p>
+                    }
+                }
+                else
+                {
+                    // invisible
+                    if (courseHasContainerCategory)
+                    {
+                        <p>
+                            <span>
+                                <a class="hidden-title" asp-controller="category" asp-action="category" asp-route-slug="@course.CategorySlug">@course.Title</a>
+                            </span>
+                            <span class="course-link">
+                                <a href="@course.Url" target="_blank">[Course site]</a>
+                            </span>
+                        </p>
+                    }
+                    else
+                    {
+                        <p>
+                            <span class="hidden-title">
+                                @course.Title
+                            </span>
+                            <span class="course-link">
+                                <a href="@course.Url" target="_blank">[Course site]</a>
+                            </span>
+                        </p>
+                    }
+                }
+            }
+            else
+            {
+                // USER
+                if (course.IsVisible)
+                {
+                    if (courseHasContainerCategory && course.IsCategoryVisible)
+                    {
+                        <p>
+                            <span>
+                                <a asp-controller="category" asp-action="category" asp-route-slug="@course.CategorySlug">@course.Title</a>
+                            </span>
+                            <span class="course-link">
+                                <a href="@course.Url" target="_blank">[Course site]</a>
+                            </span>
+                        </p>
+                    }
+                    else
+                    {
+                        <p>
+                            <span>
+                                @course.Title
+                            </span>
+                            <span class="course-link">
+                                <a href="@course.Url" target="_blank">[Course site]</a>
+                            </span>
+                        </p>
+                    }
+                }
+            }
+        }
+    }
+}
+else
+{
+    <p>Nothing to show you.</p>
+}
+
+
+@if (isThereSomethingToShow || isCurrentUserIsInAdministratorRole)
+{
+    <div class="row">
+        <div class="col-md-12 ">
+            @{
+                CourseDto[] uniqueCourses = Model.SelectMany(group => group.Courses).Distinct().ToArray();
+                int visibleUniqueCoursesCount = uniqueCourses.Count(co => co.IsVisible);
+                int invisibleUniqueCoursesCount = uniqueCourses.Length - visibleUniqueCoursesCount;                
+            }
+            @if (isCurrentUserIsInAdministratorRole)
+            {
+                <em>Listing @visibleUniqueCoursesCount visible and @invisibleUniqueCoursesCount hidden courses. Total number of unique courses: @uniqueCourses.Length </em>
+            }
+            else
+            {
+                <em>Listing @visibleUniqueCoursesCount unique course(s).</em>
+            }
+        </div>
+    </div>
+}

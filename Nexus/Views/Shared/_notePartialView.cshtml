@@ -1,0 +1,37 @@
+﻿@model NoteDto
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    string dateString = Model.LastUpdateDate.HasValue ? $"Last updated: {Model.LastUpdateDate.Value:D} | Created: {Model.CreationDate:D}" : Model.CreationDate.ToString("D");
+}
+
+<div class="entry-container" style="margin-bottom: 30px;">
+    <div class="note-container">
+        <div class="note-content">
+            <h3 class="entry-header">
+                @if (Model.IsVisible)
+                {
+                    <a class="entry-header" asp-controller="notes" asp-action="note" asp-route-id="@Model.Id" asp-route-slug="@Model.Slug">@Model.Title</a>
+                }
+                else
+                {
+                    <a class="entry-header hidden-title" asp-controller="notes" asp-action="note" asp-route-id="@Model.Id" asp-route-slug="@Model.Slug">@Model.Title</a>
+                }
+                @{
+                    if (HttpContextAccessor.HttpContext.User.IsInRole("Administrator"))
+                    {
+                        <a asp-controller="Notes" asp-action="Edit" asp-route-id="@Model.Id" asp-area="Admin">
+                            <i class="far fa-edit edit-post"></i>
+                        </a>
+                    }
+                }
+            </h3>
+            <h6>@dateString</h6>
+            <p>@Html.Raw(Model.Content)</p>
+        </div>
+        <div class="entry-footer">
+            @{ await Html.RenderPartialAsync("categoriesDisplayPartial", Model.NoteCategories); }
+            @{ await Html.RenderPartialAsync("tagDisplayPartial", Model.NoteTags); }
+        </div>
+    </div>
+    <div class="seperator"></div>
+</div>

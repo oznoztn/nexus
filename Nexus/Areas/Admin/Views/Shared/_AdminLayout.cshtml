@@ -1,0 +1,254 @@
+﻿@using Nexus.Identity.Models;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+@{
+    var loggedUser = await UserManager.GetUserAsync(User);
+    var culture = System.Globalization.CultureInfo.CurrentCulture.ToString();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Nexus | @ViewData[NavigationPageManager.ActiveControllerKey] > @ViewData[NavigationPageManager.ActivePageKey]</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/node/bootstrap/dist/css/bootstrap.css">
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/node/bootstrap/dist/css/bootstrap.min.css">
+    </environment>
+
+    <link rel="stylesheet" href="~/node/@@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="~/node/ionicons/dist/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/css/adminLTE/AdminLTE.min.css">
+    <link rel="stylesheet" href="~/css/adminLTE/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link href="~/node/toastr/build/toastr.min.css" rel="stylesheet" />
+    <link href="~/node/select2/dist/css/select2.css" rel="stylesheet" />
+    <link href="~/node/icheck/skins/flat/aero.css" rel="stylesheet" />
+    <link href="~/lib/kendo-ui/styles/kendo.common-fiori.min.css" rel="stylesheet" />
+    <link href="~/lib/kendo-ui/styles/kendo.fiori.min.css" rel="stylesheet" />
+    @RenderSection("PageLevelStyles", false)
+    <link href="~/css/admin.css" rel="stylesheet" />
+
+    <script src="~/node/jquery/dist/jquery.min.js"></script>
+    <script src="~/node/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/node/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/adminLTE/adminlte.min.js"></script>
+    <script src="~/node/toastr/build/toastr.min.js"></script>
+    <script src="~/node/select2/dist/js/select2.js"></script>
+    <script src="~/node/icheck/icheck.js"></script>
+    <script src="~/lib/kendo-ui/js/kendo.all.min.js"></script>
+    <script src="~/lib/kendo-ui/js/kendo.aspnetmvc.min.js"></script>
+    <script src="@Url.Content("~/lib/kendo-ui/js/cultures/kendo.culture." + culture + ".min.js")"></script>
+    <script type="text/javascript">
+        //set the Kendo UI culture
+        kendo.culture("@culture");
+    </script>
+    
+    @RenderSection("PageLevelScripts", false)
+    <script src="~/js/admin.js"></script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <!-- Main Header -->
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="/admin" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>N</b>E<b>X</b></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>NEX</b>US</span>
+            </a>
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a asp-action="index" asp-controller="notes" asp-area="" target="_blank" class="active">View blog</a>
+                        </li>
+                        @*<li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">One more separated link</a></li>
+                                </ul>
+                            </li>*@
+                    </ul>
+                </div>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                        <li class="dropdown messages-menu">
+                            <!-- Menu toggle button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="label label-success">4</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">You have 4 messages</li>
+                                <li>
+                                    <!-- inner menu: contains the messages -->
+                                    <ul class="menu">
+                                        <li>
+                                            <!-- start message -->
+                                            <a href="#">
+                                                <!-- Message title and timestamp -->
+                                                <h4>
+                                                    Support Team
+                                                    <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                                                </h4>
+                                                <!-- The message -->
+                                                <p>Why not buy a new awesome theme?</p>
+                                            </a>
+                                        </li>
+                                        <!-- end message -->
+                                    </ul>
+                                    <!-- /.menu -->
+                                </li>
+                                <li class="footer"><a href="#">See All Messages</a></li>
+                            </ul>
+                        </li>
+                        <!-- /.messages-menu -->
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <span class="hidden-xs">@loggedUser.Name</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <p>
+                                        @loggedUser.Name
+                                        <small>@loggedUser.UserName - @loggedUser.Email</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a asp-area="Admin" asp-controller="Manage" asp-action="Index" class="btn btn-default btn-flat" title="Manage">Profile</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <form asp-area="Admin" asp-controller="Account" asp-action="Logout" method="post">
+                                            <input type="submit" class="btn btn-default btn-flat" value="Logout">
+                                        </form>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar Menu -->
+                @{ await Html.RenderPartialAsync("_sideBarMenuSection"); }
+                <!-- /.sidebar-menu -->
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            @{
+                if (TempData["status_message"] is string message && !string.IsNullOrWhiteSpace(message))
+                {
+                    <div class="flat alert alert-success alert-dismissible" style="margin-bottom: 0">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fa fa-check"></i>@message</h5>
+                    </div>
+                }
+            }
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>@ViewBag.Title<small>@ViewBag.OptionalTitle</small></h1>
+            </section>
+            <!-- Main content -->
+            <section class="content container-fluid">
+                @RenderBody()
+            </section>
+            @RenderSection("PageLevelScriptsAfterRenderBody", false)
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <!-- To the right -->
+            <div class="pull-right hidden-xs">
+                Anything you want
+            </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy;@{ string yearString = DateTime.Now.Year == 2018 ? "2018" : $"2018 - {DateTime.Now.Year}"; } @yearString <a href="#">Nexus</a>.</strong> All rights reserved.
+        </footer>
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+                <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <!-- Home tab content -->
+                <div class="tab-pane active" id="control-sidebar-home-tab">
+                    <h3 class="control-sidebar-heading">Recent Activity</h3>
+                    <ul class="control-sidebar-menu">
+                        <li>
+                            <a href="javascript:;">
+                                <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+                                <div class="menu-info">
+                                    <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+                                    <p>Will be 23 on April 24th</p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.tab-pane -->
+                <!-- Settings tab content -->
+                <div class="tab-pane" id="control-sidebar-settings-tab">
+                    <form method="post">
+                        <h3 class="control-sidebar-heading">General Settings</h3>
+                        <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                                Report panel usage
+                                <input type="checkbox" class="pull-right" checked>
+                            </label>
+                            <p>
+                                Some information about this general settings option
+                            </p>
+                        </div>
+                        <!-- /.form-group -->
+                    </form>
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+    </div>
+    <!-- ./wrapper -->
+</body>
+@RenderSection("PageLevelScriptsBottom", false)
+</html>

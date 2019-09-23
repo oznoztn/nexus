@@ -1,0 +1,93 @@
+﻿@model List<BookGroup>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = $"Books - Nexus";
+    bool isCurrentUserIsInAdministratorRole = HttpContextAccessor.HttpContext.User.IsInRole("Administrator");
+    bool isThereSomethingToShow = Model.Any(group => group.Books.Any(c => c.IsVisible));
+}
+@section PageLevelStyles
+    {
+    <style>
+        .cover {
+            width: 150px;
+            height: 188px;
+            -webkit-box-shadow: #ddd 0px 4px 5px;
+        }
+    </style>
+}
+
+<h4>Books</h4>
+@if (isThereSomethingToShow || isCurrentUserIsInAdministratorRole)
+{
+    <em>Books I am finished reading or currently reading:</em>
+    foreach (var group in Model)
+    {
+        if (group.Books.Any(bookDto => bookDto.IsVisible) || isCurrentUserIsInAdministratorRole)
+        {
+            <h5>@group.CategoryTitle</h5>
+
+            foreach (var book in group.Books)
+            {
+                if (book.IsVisible || isCurrentUserIsInAdministratorRole)
+                {
+                    if (book.CategoryId.HasValue && book.CategoryId != 0)
+                    {
+                        if (book.CoverImage != null && !string.IsNullOrWhiteSpace(book.CoverImageMime))
+                        {
+                            if (book.IsCategoryVisible || isCurrentUserIsInAdministratorRole)
+                            {
+                                <a asp-controller="category" asp-action="category" asp-route-slug="@book.CategorySlug">
+                                    <img src="data:@book.CoverImageMime;base64,@Convert.ToBase64String(book.CoverImage)" alt="@book.Title" class="cover" />
+                                </a>
+                            }
+                            else
+                            {
+                                <img src="data:@book.CoverImageMime;base64,@Convert.ToBase64String(book.CoverImage)" alt="@book.Title" class="cover" />
+                            }
+                        }
+                        else
+                        {
+                            <img src="/images/no-thumbnail.png" alt="@book.Title" class="cover" />
+                        }
+                    }
+                    else
+                    {
+                        if (book.CoverImage != null && !string.IsNullOrWhiteSpace(book.CoverImageMime))
+                        {
+                            <img src="data:@book.CoverImageMime;base64,@Convert.ToBase64String(book.CoverImage)" alt="@book.Title" class="cover" />
+                        }
+                        else
+                        {
+                            <img src="/images/no-thumbnail.png" alt="@book.Title" class="cover" />
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+else
+{
+    <p>Nothing to show you.</p>
+}
+
+@if (isThereSomethingToShow || isCurrentUserIsInAdministratorRole)
+{
+    <div class="row">
+        <div class="col-md-12 ">
+            @{
+                var uniqueBooks = Model.SelectMany(group => group.Books).Distinct().ToArray();
+                int visibleUniqueBooksCount = uniqueBooks.Count(co => co.IsVisible);
+                int invisibleUniqueBooksCount = uniqueBooks.Length - visibleUniqueBooksCount;
+            }
+            @if (isCurrentUserIsInAdministratorRole)
+            {
+                <em>Listing @visibleUniqueBooksCount visible and @invisibleUniqueBooksCount hidden books. Total number of unique books: @uniqueBooks.Length </em>
+            }
+            else
+            {
+                <em>Listing @visibleUniqueBooksCount unique books(s).</em>
+            }
+        </div>
+    </div>
+}

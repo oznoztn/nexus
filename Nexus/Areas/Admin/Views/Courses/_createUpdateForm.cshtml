@@ -1,0 +1,114 @@
+﻿@model CourseViewModel
+
+<div class="box-body">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>    
+    <div class="row">
+        <div class="col-md-6">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="help-block text-red"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Url"></label>
+            <input asp-for="Url" class="form-control" placeholder="http://"/>
+            <span asp-validation-for="Url" class="help-block text-red"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Author"></label>
+                <input asp-for="Author" class="form-control" />
+                <span asp-validation-for="Author" class="help-block text-red"></span>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Provider"></label>
+                <input asp-for="Provider" class="form-control" />
+                <span asp-validation-for="Provider" class="help-block text-red"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Abstract"></label>
+        <textarea asp-for="Abstract" class="form-control"></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Duration"></label>
+                <input asp-for="Duration" class="form-control" placeholder="in minutes" />
+                <span asp-validation-for="Duration" class="help-block text-red"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label asp-for="YearFinished"></label>
+                <input asp-for="YearFinished" class="form-control" />
+                <span asp-validation-for="YearFinished" class="help-block text-red"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label asp-for="DisplayOrder"></label>
+                <input asp-for="DisplayOrder" class="form-control" />
+                <span asp-validation-for="DisplayOrder" class="help-block text-red"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Categories"></label>
+        @(Html.Kendo()
+                      .MultiSelectFor(m => m.Categories)
+                      .DataTextField("Title")
+                      .DataValueField("Id")
+                      .AutoClose(false)
+                      .DataSource(source =>
+                      {
+                          source.Read(read =>
+                          {
+                              read.Action("GetCategories", "Courses");
+                          }).ServerFiltering(false);
+                      })
+        )
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId"></label>
+        @(Html.Kendo().DropDownListFor(m => m.CategoryId)
+                      .DataTextField("Title")
+                      .DataValueField("Id")
+                      .HtmlAttributes(new { style = "width:100%" })
+                      .DataSource(source =>
+                      {
+                          source.Read(read =>
+                          {
+                              read.Action("GetCourseNoteCategories", "Courses");
+                          }).ServerFiltering(false);
+                      })
+        )
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label asp-for="IsOnlineCourse"></label>
+                <input asp-for="IsOnlineCourse" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label asp-for="IsVisible"></label>
+                <input asp-for="IsVisible" class="form-control" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a asp-action="List" class="btn btn-default">Cancel</a>
+</div>

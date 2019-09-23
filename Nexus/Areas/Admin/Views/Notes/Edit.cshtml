@@ -1,0 +1,414 @@
+﻿@model NoteViewModel
+@{
+    ViewData["PageTitle"] = $"Note: \"{Model.Title}\"";
+    ViewData["Title"] = Model.Title;
+    ViewData["OptionalTitle"] = "Edit";
+}
+
+@section PageLevelStyles {
+    <link href="~/node/jquery-ui-dist/jquery-ui.css" rel="stylesheet" />
+    <link href="~/node/jquery-tageditor/jquery.tag-editor.css" rel="stylesheet" />
+}
+
+@section PageLevelScripts {
+    <!-- jquery tag editor-->
+    <script src="~/node/jquery-ui-dist/jquery-ui.min.js"></script>
+    <script src="~/node/jquery-ui/ui/widgets/autocomplete.js"></script>
+    <script src="~/node/jquery-tageditor/jquery.tag-editor.js"></script>
+    <script src="~/node/jquery-tageditor/jquery.caret.min.js"></script>
+    <!-- jquery tag editor-->
+
+    <script src="~/node/ckeditor/ckeditor.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_flat-aero',
+                radioClass: 'iradio_flat-aero>'
+            });
+
+            var initialTags = @Html.Raw(Toolkit.ParseToJsArray(Model.Tags.Split(',')));
+            var source = @Html.Raw(Toolkit.ParseToJsArray(Model.AvailableTags));
+            $('#@Html.IdFor(t => t.Tags)').tagEditor({
+                autocomplete: {
+                    delay: 0,
+                    position: { collision: 'flip' }, // automatic menu position up/down
+                    source: source
+                },
+                initialTags: initialTags,
+                forceLowercase: false,
+                placeholder: 'feed me with some tags'
+            });
+
+            $("#saveContentButton").on("click", function(e) {
+                var editorContent = CKEDITOR.instances.content1.getData();
+                $.ajax({
+                    type: "post",
+                    url: "@Url.Action("UpdateNoteContent", "Notes")",
+                    dataType: "json",
+                    data: {
+                        noteId: @Model.Id,
+                        content: editorContent
+                    },
+                    beforeSend: function() {
+                        $("#saveContentButton").attr("disabled", "");
+                    },
+                    complete: function(jqXHR, status) {
+                        $("#saveContentButton").removeAttr("disabled");
+                        if (jqXHR.responseJSON.status === 1) {
+                            toastr["success"]("The content has been updated!");
+                            // form içerisindeki Content isimli hidden inputun değerini set ediyorum
+                            // aksi halde form gönderildiğinde Content, formdaki Content form ilk yüklendiğindeki değerini taşıyacağından
+                            // editör sayfasında ajax ile yapılan değişiklikler iptal olurdu.
+                            $("#Content").val(editorContent);
+                        } else
+                            toastr["error"]("'Save Content' operation has been failed!");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+    </script>
+}
+
+@section PageLevelScriptsBottom
+    {
+    <script>
+        CKEDITOR.replace('content1',
+            {
+                customConfig: '/js/ckconfig.js',
+                language: 'en',
+                extraPlugins: 'uploadimage,image2,codesnippet',
+                uploadUrl: '@Url.Action("NotePictureUpload", "Notes")',
+                codeSnippet_theme: 'vs',
+                height: 500,
+                filebrowserBrowseUrl: '@Url.Action("BrowseNoteImages", "Notes")',
+                filebrowserUploadUrl: '@Url.Action("NotePictureUpload", "Notes")',
+            }).on("fileUploadRequest",
+            function(e) {
+                e.data.requestData.noteId = @Model.Id;
+            });
+
+        var ckEditor_imageToRemove;
+        var ckEditor_imageNameToBeReplaced;
+        var editor = CKEDITOR.instances['content1'];
+        editor.on('instanceReady',
+            function(e) {
+                editor.addCommand('customImageDeleteCommand',
+                    {
+                        exec: function (editor) {
+                            var dialogText =
+                                'Are you sure you want to delete selected image?' +
+                                    '\nThe image will be deleted and the post will be saved!';
+
+                            if (confirm(dialogText)) {
+                                ckEditorPictureDelete(@Model.Id, ckEditor_imageNameToBeReplaced);
+                            }
+                        }
+                    });
+                editor.contextMenu.addListener(function(selection) {
+                    var selectedDomElement = selection.$;
+                    if (selectedDomElement.hasChildNodes()) {
+                        var firstChild = selectedDomElement.childNodes[0];
+                        if ((typeof (firstChild.tagName) !== 'undefined') && (firstChild.tagName !== null)) {
+                            var elementType = firstChild.tagName.toLowerCase();
+                            if (elementType === 'img') {
+                                ckEditor_imageToRemove = selectedDomElement.parentNode;
+                                ckEditor_imageNameToBeReplaced = selectedDomElement.childNodes[0].src.toString().split('/').pop();
+
+                                return {
+                                    customImageDeleteCommand: CKEDITOR.TRISTATE_ON
+                                }
+                            } else if (elementType === 'figure') {
+                                ckEditor_imageToRemove = selectedDomElement;
+
+                                var div = selectedDomElement.childNodes[0];
+                                var span = div.childNodes[0];
+                                ckEditor_imageNameToBeReplaced = span.childNodes[0].src.toString().split('/').pop();
+
+                                return {
+                                    customImageDeleteCommand: CKEDITOR.TRISTATE_ON
+                                }
+                            }
+                        }
+                    }
+                });
+                editor.addMenuItems({
+                    customImageDeleteCommand: {
+                        label: "Delete",
+                        command: 'customImageDeleteCommand',
+                        group: 'image',
+                        order: 1,
+                        icon: ''
+                    }
+                });
+            });
+    </script>
+
+    <script>
+        function ckEditorRefresh() {
+            $.ajax({
+                type: 'get',
+                url: '@Url.Action("GetNoteContent", "Notes")',
+                data: {
+                    noteId: @Model.Id
+                },
+                dataType: 'text',
+                complete: function (jqXHR, status) {
+                    CKEDITOR.instances.content1.setData(jqXHR.responseText);
+                    toastr["info"] = "The content has been reloaded!";
+                }
+            });
+        }
+
+        function ckEditorPictureDelete(noteId, fileName) {
+            $.ajax({
+                type: 'post',
+                url: '@Url.Action("NotePictureDelete", "Notes")',
+                data: {
+                    noteId: noteId,
+                    fileName: fileName
+                },
+                complete: function (jqXHR, textStatus) {
+                    if (jqXHR.responseJSON.status === 1) {
+                        toastr["info"]("Delete picture operation has been successful!");
+
+                        // remove the pic from editor
+                        ckEditor_imageToRemove.parentNode.removeChild(ckEditor_imageToRemove);
+
+                        // update content
+                        ckEditorUpdate();
+                    } else {
+                        toastr["error"](jqXHR.responseJSON.message);  // "Delete picture operation has been failed!";<
+                    }
+                }
+            });
+        }
+
+        function ckEditorUpdate() {
+            var editorContent = CKEDITOR.instances.content1.getData();
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("UpdateNoteContent", "Notes")",
+                dataType: "json",
+                data: {
+                    noteId: @Model.Id,
+                    content: editorContent
+                },
+                beforeSend: function() {
+                    $("#button-modal-update-picture").attr("disabled", "");
+                },
+                complete: function(jqXHR, status) {
+                    $("#button-modal-update-picture").removeAttr("disabled");
+                    if (jqXHR.responseJSON.status === 1) {
+                        toastr["success"]("The note has been updated successfully!");
+
+                        // form içerisindeki Content isimli hidden inputun değerini set ediyorum
+                        // aksi halde form gönderildiğinde Content, formdaki Content form ilk yüklendiğindeki değerini taşıyacağından
+                        // editör sayfasında ajax ile yapılan değişiklikler iptal olurdu.
+                        $("#Content").val(editorContent);
+                    } else
+                        toastr["error"]("Content update operation has been failed!)");
+                }
+            });
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#noteTab" data-toggle="tab">Note</a></li>
+                <li><a href="#contentTab" data-toggle="tab">Content</a></li>
+                <li><a href="#imagesTab" data-toggle="tab">Images</a></li>
+                @*<li class="pull-right">
+                        <a href="#">Taslağa çevir</a>
+                    </li>*@
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="noteTab">
+                    <section id="new">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form asp-action="Edit" method="post">
+                                    <div class="box-body">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="form-group">
+                                            <label asp-for="Title"></label>
+                                            <input asp-for="Title" class="form-control"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Slug"></label>
+                                            <input asp-for="Slug" class="form-control"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Abstract"></label>
+                                            <textarea asp-for="Abstract" class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <input asp-for="Content" type="hidden"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.Categories)
+                                                @(Html.Kendo().MultiSelectFor(m => m.Categories)
+                                                      .DataTextField("Title")
+                                                      .DataValueField("Id")
+                                                      .AutoClose(false)
+                                                      .DataSource(source =>
+                                                      {
+                                                          source.Read(read =>
+                                                          {
+                                                              read.Action("GetCategories", "Notes");
+                                                          }).ServerFiltering(false);
+                                                      }))
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Tags">Tags</label>
+                                            <input asp-for="Tags" value=""/>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m.CreationDate, "Visible Date")
+                                                    @(Html.Kendo()
+                                                          .DateTimePickerFor(m => m.CreationDate)
+                                                          .HtmlAttributes(new {style = "width: 100%", title = "datepicker"}))
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="LastUpdateDate"></label>
+                                                    @(Html.Kendo().DateTimePickerFor(m => m.LastUpdateDate).HtmlAttributes(new {style = "width: 100%", title = "datepicker"}))
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="IsVisible">Is Visible?</label>
+                                            <input type="checkbox" asp-for="IsVisible"/>
+                                        </div>
+                                    </div>
+                                    <div class="box-footer">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <a class="btn btn-default" asp-controller="Notes" asp-action="List">Cancel</a>
+                                        <a class="btn btn-default flat pull-right" asp-area="" asp-controller="Notes" asp-action="Note" asp-route-id="@Model.Id" asp-route-slug="@Model.Slug" target="_blank">View note</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="tab-pane" id="contentTab">
+                    <section id="new">
+                        <div class="row">
+                            @if (Model.Id != 0)
+                            {
+                                <div class="col-md-12">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            @*<label asp-for="Content"></label>*@
+                                            <textarea asp-for="Content" id="content1" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="box-footer">
+                                        <button id="saveContentButton" class="btn btn-primary pull-right">Save</button>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-12">
+                                    <div class="box-body">
+                                        <blockquote>
+                                            <p>To be able to edit the content, you should save the note first.</p>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                </div>
+
+                <div class="tab-pane" id="imagesTab">
+                    <section id="new">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <input type="text" id="txtSearch" placeholder="image file name to look for" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 pull-right">
+                                    <div class="form-group">
+                                        <button id="buttonSearch" class="btn btn-default">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            @if (Model.Id != 0)
+                            {
+                                <div class="col-md-12">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            @*@(Html.Kendo().Grid<PicContainer>()
+                                                .Name("picturesGrid")
+                                                .Columns(columns =>
+                                                {
+                                                    columns.Bound(c => c.FilePath).ClientTemplate("<img src='#=FilePath#'></img>");
+                                                    columns.Bound(c => c.FileName).Visible(false);
+                                                })
+                                                .Scrollable(t => t.Height(1000))
+                                                .AutoBind(false)
+                                                .Pageable(pageable => pageable
+                                                    .Refresh(true)
+                                                    .PageSizes(new int[] {25, 50, 100})
+                                                    .ButtonCount(5))
+                                                .DataSource(dataSource => dataSource
+                                                    .Ajax()
+                                                    .PageSize(50)
+                                                    .Read(read => read.Action("NotePictures_Read", "Notes", new {noteId = Model.Id}))
+                                                ))*@
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-12">
+                                    <div class="box">
+                                        <blockquote>
+                                            <p>To be able to view and replace the pictures, you should save the note first.</p>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

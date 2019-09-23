@@ -1,0 +1,40 @@
+﻿@model PagedDtoList<NoteDto>
+@{
+    ViewData["Title"] = $"{new DateTime((int)ViewBag.SelectedYear, (int)ViewBag.SelectedMonth, 1):Y} - Nexus";   
+}
+
+@section PageLevelScriptsBottom
+{
+    <script src="~/node/twbs-pagination/jquery.twbsPagination.js"></script>
+    <script>
+        var total = @(decimal.Ceiling((decimal) Model.TotalItemCount / Model.PageSize));
+        $("#twbs-pagination").twbsPagination({
+            totalPages: (total > 0) ? total : 1,
+            visiblePages: 5,
+            prevText: '<span aria-hidsden="true">&laquo;</span>',
+            nextText: '<span aria-hidden="true">&raquo;</span>',
+            href: '?page={{number}}'
+        });
+    </script>
+}
+
+@if (ViewBag.CategoryTitle is string && !string.IsNullOrWhiteSpace(ViewBag.CategoryTitle as string))
+{
+    string selectedCategory = ViewBag.CategoryTitle as string;
+    <div class="col-sm-12">
+        <blockquote>
+            <p class="lead">Selected Category: @selectedCategory</p>
+        </blockquote>
+    </div>
+}
+
+<div class="col-sm-12">
+    @{ await Html.RenderPartialAsync("_NotePartial", Model); }
+</div>
+
+<div class="col-sm-12">
+    <nav>
+        <ul id="twbs-pagination" class="pagination-sm pull-left"></ul>
+    </nav>
+</div>
+

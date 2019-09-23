@@ -1,0 +1,24 @@
+﻿@using Nexus.Models
+@model PagedDtoList<NoteDto>
+@{
+    ViewData["Title"] = $"{ViewBag.CategoryTitle} - Nexus";
+}
+
+@if (ViewBag.CategoryTitle is string && !string.IsNullOrWhiteSpace(ViewBag.CategoryTitle as string))
+{
+    string selectedCategory = ViewBag.CategoryTitle as string;
+
+    <p class="lead">Selected Category: @selectedCategory</p>
+}
+
+@if (Model != null)
+{
+    foreach (var note in Model)
+    {
+        await Html.RenderPartialAsync("_notePartialView", note);
+    }
+}
+
+@{
+    await Html.RenderPartialAsync("_pager", new PagerInfo { Controller = "category", Action = "index", TotalPages = Model?.TotalPages ?? 0 });
+}

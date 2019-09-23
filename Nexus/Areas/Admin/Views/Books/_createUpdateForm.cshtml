@@ -1,0 +1,126 @@
+﻿@model BookViewModel
+<div class="box-body">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    @*<input type="hidden" asp-for="CoverImage" />*@
+    <div class="row">
+        <div class="col-md-6">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="help-block text-red"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Url"></label>
+            <input asp-for="Url" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Author"></label>
+        <input asp-for="Author" class="form-control" />
+        <span asp-validation-for="Author" class="help-block text-red"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Pages"></label>
+                <input asp-for="Pages" class="form-control" />
+                <span asp-validation-for="Pages" class="help-block text-red"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="PublicationYear"></label>
+                <input asp-for="PublicationYear" class="form-control" />
+                <span asp-validation-for="PublicationYear" class="help-block text-red"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="ReadingStatusId"></label>
+                <select asp-for="ReadingStatusId" asp-items="Model.ReadingStatusSelections" id="ReadingStatusId" class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="YearFinished"></label>
+                <input asp-for="YearFinished" class="form-control" />
+                <span asp-validation-for="YearFinished" class="help-block text-red"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Categories"></label>
+        @(Html.Kendo()
+                      .MultiSelectFor(m => m.Categories)
+                      .DataTextField("Title")
+                      .DataValueField("Id")
+                      .AutoClose(false)
+                      .DataSource(source =>
+                      {
+                          source.Read(read =>
+                          {
+                              read.Action("GetCategories", "Courses");
+                          }).ServerFiltering(false);
+                      })
+        )
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId"></label>
+        @(Html.Kendo()
+                      .DropDownListFor(m => m.CategoryId)
+                      .DataTextField("Title")
+                      .DataValueField("Id")
+                      .HtmlAttributes(new { style = "width: 100%", })
+                      .DataSource(source =>
+                      {
+                          source.Read(read =>
+                          {
+                              read.Action("GetBookNoteCategories", "Books");
+                          }).ServerFiltering(false);
+                      }))
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DisplayOrder"></label>
+        <input asp-for="DisplayOrder" class="form-control" />
+        <span asp-validation-for="DisplayOrder" class="help-block text-red"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsVisible"></label>
+        <input asp-for="IsVisible" />
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="CoverImage"></label>
+                <input type="file" name="CoverImageFile" id="CoverImageFile" style="width: 50%;" />
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>Current Cover Image:</label>
+                @if (Model.CoverImage != null)
+                {
+                    <img id="coverImagePreview" class="thumbnail" src="data:image/png;base64,@System.Convert.ToBase64String(Model.CoverImage)" width="150" />
+                }
+                else
+                {
+                    <br/>
+                    <img id="coverImagePreview" src="/images/no-thumbnail.png" alt="@Model.Title" class="img-thumbnail" style="width: 150px;" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box-footer">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a asp-action="List" class="btn btn-default">Cancel</a>
+</div>

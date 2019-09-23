@@ -1,0 +1,122 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
+    <UserSecretsId>c6bf01b4-d108-4c92-9137-f28feef1951a</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\css\adminLTE\**" />
+    <Compile Remove="wwwroot\images\**" />
+    <Compile Remove="wwwroot\js\adminLTE\**" />
+    <Compile Remove="wwwroot\lib-nobower\**" />
+    <Compile Remove="wwwroot\lib\**" />
+    <Content Remove="wwwroot\css\adminLTE\**" />
+    <Content Remove="wwwroot\images\**" />
+    <Content Remove="wwwroot\js\adminLTE\**" />
+    <Content Remove="wwwroot\lib-nobower\**" />
+    <Content Remove="wwwroot\lib\**" />
+    <EmbeddedResource Remove="wwwroot\css\adminLTE\**" />
+    <EmbeddedResource Remove="wwwroot\images\**" />
+    <EmbeddedResource Remove="wwwroot\js\adminLTE\**" />
+    <EmbeddedResource Remove="wwwroot\lib-nobower\**" />
+    <EmbeddedResource Remove="wwwroot\lib\**" />
+    <None Remove="wwwroot\css\adminLTE\**" />
+    <None Remove="wwwroot\images\**" />
+    <None Remove="wwwroot\js\adminLTE\**" />
+    <None Remove="wwwroot\lib-nobower\**" />
+    <None Remove="wwwroot\lib\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\images\no-thumbnail.png" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\editor.png" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\imagebrowser.png" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\indeterminate.gif" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\loading-image.gif" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\loading.gif" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\loading_2x.gif" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\markers.png" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\markers_2x.png" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\slider-h.gif" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\slider-v.gif" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\sprite.png" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\sprite_2x.png" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\sprite_kpi.png" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\Fiori\sprite_kpi_2x.png" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans-Bold.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans-BoldOblique.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans-ExtraLight.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans-Oblique.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSans.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSansMono-Bold.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSansMono-BoldOblique.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSansMono-Oblique.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSansMono.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSerif-Bold.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSerif-BoldItalic.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSerif-Italic.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\DejaVuSerif.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\DejaVu\LICENSE.txt" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\KendoUIGlyphs.eot" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\KendoUIGlyphs.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\KendoUIGlyphs.woff" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\WebComponentsIcons.eot" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\WebComponentsIcons.ttf" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\WebComponentsIcons.woff" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\kendo.common-fiori.min.css" />
+    <Content Include="wwwroot\lib\kendo-ui\styles\kendo.fiori.min.css" />
+    <Content Include="wwwroot\lib\prism (2).css" />
+    <Content Include="wwwroot\lib\prism.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+    <PackageReference Include="FluentValidation" Version="8.4.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2019.2.619" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap.css.map" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.js" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.js.map" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.min.js" />
+    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\js\simplePagination.js-master\jquery.simplePagination.js" />
+    <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.en-US.min.js" />
+    <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.en-US.min.js.map" />
+    <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.tr-TR.min.js" />
+    <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.tr-TR.min.js.map" />
+    <None Include="wwwroot\lib\kendo-ui\js\kendo.all.min.js" />
+    <None Include="wwwroot\lib\kendo-ui\js\kendo.all.min.js.map" />
+    <None Include="wwwroot\lib\kendo-ui\js\kendo.aspnetmvc.min.js" />
+    <None Include="wwwroot\lib\kendo-ui\js\kendo.aspnetmvc.min.js.map" />
+    <None Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\KendoUIGlyphs.svg" />
+    <None Include="wwwroot\lib\kendo-ui\styles\fonts\glyphs\WebComponentsIcons.svg" />
+    <None Include="wwwroot\lib\kendo-ui\styles\kendo.common-fiori.min.css.map" />
+    <None Include="wwwroot\lib\kendo-ui\styles\kendo.fiori.min.css.map" />
+    <None Include="wwwroot\lib\prism (2).js" />
+    <None Include="wwwroot\lib\prism.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nexus.Identity\Nexus.Identity.csproj" />
+    <ProjectReference Include="..\Nexus.Service\Nexus.Service.csproj" />
+  </ItemGroup>
+
+</Project>

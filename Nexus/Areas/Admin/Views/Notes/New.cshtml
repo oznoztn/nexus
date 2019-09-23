@@ -1,0 +1,221 @@
+﻿@model NoteViewModel
+@{
+    ViewData["Title"] = "New";
+    ViewData["OptionalTitle"] = "Add a new note";
+}
+
+@section PageLevelStyles {
+    <link href="~/node/jquery-ui-dist/jquery-ui.css" rel="stylesheet" />
+    <link href="~/node/jquery-tageditor/jquery.tag-editor.css" rel="stylesheet" />
+
+    <style>
+        .lead {
+            margin-bottom: 0;
+        }
+    </style>
+}
+
+@section PageLevelScripts {
+    <!-- jquery tag editor-->
+    <script src="~/node/jquery-ui-dist/jquery-ui.min.js"></script>
+    <script src="~/node/jquery-ui/ui/widgets/autocomplete.js"></script>
+    <script src="~/node/jquery-tageditor/jquery.tag-editor.js"></script>
+    <script src="~/node/jquery-tageditor/jquery.caret.min.js"></script>
+    <!-- jquery tag editor-->
+
+    <script src="~/node/ckeditor/ckeditor.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_flat-aero',
+                radioClass: 'iradio_flat-aero>',
+                codeSnippet_theme: 'monokai'
+            });
+
+            var initialTags = @Html.Raw(Toolkit.ParseToJsArray(Model.Tags != null ? Model.Tags.Split(',') : Array.Empty<string>()));
+            var source = @Html.Raw(Toolkit.ParseToJsArray(Model.AvailableTags));
+            $('#@Html.IdFor(t => t.Tags)').tagEditor({
+                autocomplete: {
+                    delay: 0,
+                    position: { collision: 'flip' }, // automatic menu position up/down
+                    source: source
+                },
+                initialTags: initialTags,
+                forceLowercase: false,
+                placeholder: 'feed me with some tags'
+            });
+        });
+    </script>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <form asp-action="New" asp-controller="Categories" asp-antiforgery="true" method="post">
+                    @{ await Html.RenderPartialAsync("_createUpdateCategoryForm", new CategoryViewModel());}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#fa-icons" data-toggle="tab">Note</a></li>
+                <li><a href="#glyphicons" data-toggle="tab">Content</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="fa-icons">
+                    <section id="new">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form asp-action="New" method="post">
+                                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label asp-for="Title"></label>
+                                            <input asp-for="Title" class="form-control"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Slug"></label>
+                                            <input asp-for="Slug" class="form-control"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Abstract"></label>
+                                            <textarea asp-for="Abstract" class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Categories</label>
+                                            <div class="input-group">
+                                                @(Html.Kendo().MultiSelectFor(m => m.Categories)
+                                                      .DataTextField("Title")
+                                                      .DataValueField("Id")
+                                                      .AutoClose(false)
+                                                      .DataSource(source =>
+                                                      {
+                                                          source.Read(read =>
+                                                          {
+                                                              read.Action("GetCategories", "Notes");
+                                                          }).ServerFiltering(false);
+                                                      }))
+                                                <span class="input-group-btn">
+                                                    <button id="buttonAddCategory" class="btn btn-info btn-flat" data-toggle="modal" data-target="#categoryModal" data-url="@Url.Action("NewPartial", "Categories")">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m.Categories)
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <div class="form-group">
+                                                    <label></label>
+                                                    <div class="input-group date">
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Tags">Tags</label>
+                                            <input asp-for="Tags" value=""/>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="CreationDate"></label>
+                                                    @(Html.Kendo().DateTimePickerFor(m => m.CreationDate).HtmlAttributes(new {style = "width: 100%", title = "datepicker"}))
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="LastUpdateDate"></label>
+                                                    @(Html.Kendo().DateTimePickerFor(m => m.LastUpdateDate).HtmlAttributes(new {style = "width: 100%", title = "datepicker"}))
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="IsVisible">Is Visible?</label>
+                                            <input type="checkbox" asp-for="IsVisible"/>
+                                        </div>
+                                    </div>
+                                    @{ await Html.RenderPartialAsync("FormButtons"); }
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- /#fa-icons -->
+                <!-- glyphicons-->
+                <div class="tab-pane" id="glyphicons">
+                    <section id="new">
+                        <div class="row">
+                            @if (Model.Id != 0)
+                            {
+                                <div class="col-md-12">
+                                    <form asp-action="New" method="post">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label asp-for="Content"></label>
+                                                <textarea asp-for="Content" class="form-control"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="IsVisible">Is Visible?</label>
+                                                <input type="checkbox" asp-for="IsVisible" />
+                                            </div>
+                                        </div>
+                                        @{ await Html.RenderPartialAsync("FormButtons"); }
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-12">
+                                    <div class="box-body">
+                                        <p class="lead">You need to save the note first.</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#categoryModal').on('show.bs.modal', function (e) {
+        var button = $(e.relatedTarget);
+        var url = button.data("url");
+        var modal = $(this);
+        //$(modal).load(url, '', function () {
+        //    console.log($("#createCategoryForm"));
+        //    $.validator.unobtrusive.parse("#createCategoryForm");
+        //    console.log("load action was completed");
+        //});
+    });
+
+
+    $("#buttonAddCategory").on("click", function(e) {
+
+    });
+</script>

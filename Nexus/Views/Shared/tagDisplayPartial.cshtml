@@ -1,0 +1,72 @@
+﻿@model IEnumerable<NoteTagDto>
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    bool isAdministratorLoggedIn = HttpContextAccessor.HttpContext.User.IsInRole("Administrator");
+}
+
+@if (Model.Any())
+{
+    if (Model.Any(tag => tag.IsHidden == false))
+    {
+        // En az bir tane Hidden olmayan tag var.
+        <div class="tags-menu">
+            Tags:
+            <ul class="inline-ul">
+                @foreach (var tag in Model)
+                {
+                    var lastItem = isAdministratorLoggedIn ? Model.Last() : Model.Last(t => !t.IsHidden);
+                    bool isLastItem = tag.Equals(lastItem);
+                    string comma = isLastItem ? "" : ",";
+
+                    if (tag.IsHidden)
+                    {
+                        if (isAdministratorLoggedIn)
+                        {
+                            <li class="inline-li">
+                                <a class="hidden-title" asp-controller="Tags" asp-action="Index" asp-route-slug="@tag.Slug">
+                                    @tag.Title
+                                </a>
+                                @comma
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="inline-li">
+                            <a asp-controller="Tags" asp-action="Index" asp-route-slug="@tag.Slug">
+                                @tag.Title
+                            </a>
+                            @comma
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        // Bir tane bile Hidden olmayan tag yok. Dolayısıyla ziyaretçiye gösterilecek bir tag yok.
+        if (isAdministratorLoggedIn)
+        {
+            <div class="tags-menu">
+                Tags:
+                <ul class="inline-ul">
+                    @foreach (var tag in Model)
+                    {
+                        <li class="inline-li">
+                            @{
+                                bool lastItem = tag.Equals(Model.Last());
+                                string comma = lastItem ? "" : ",";
+                            }
+                            <a asp-controller="Tags" asp-action="Index" asp-route-slug="@tag.Slug">
+                                @tag.Title
+                            </a>
+                            @comma
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    }
+}

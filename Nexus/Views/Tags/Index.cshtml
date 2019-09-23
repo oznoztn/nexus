@@ -1,0 +1,24 @@
+﻿@using Nexus.Models
+@model PagedDtoList<NoteDto>
+@{
+    ViewData["Title"] = $"{ViewBag.SelectedTag} - Nexus";
+}
+
+@if (ViewBag.SelectedTag is string && !string.IsNullOrWhiteSpace(ViewBag.SelectedTag as string))
+{
+    string selectedTag = ViewBag.SelectedTag as string;
+
+    <p class="lead">Selected Tag: @selectedTag</p>
+}
+
+@if (Model != null)
+{
+    foreach (var note in Model)
+    {
+        await Html.RenderPartialAsync("_notePartialView", note);
+    }
+}
+
+@{
+    await Html.RenderPartialAsync("_pager", new PagerInfo { Controller = "tags", Action = "index", TotalPages = Model?.TotalPages ?? 0});
+}

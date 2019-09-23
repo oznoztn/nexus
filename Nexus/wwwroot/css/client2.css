@@ -1,0 +1,53 @@
+﻿.block-color {
+    background-color: #86babc;
+    height: 3px;
+}
+
+.navbar-header {
+    height: 50px;
+}
+
+.btn-link:hover {
+    text-decoration: none;
+}
+
+hr {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.sidenav {
+    height: 100%;
+    max-width: 200px;
+    min-width: 200px;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.note-container {
+    margin-top: 30px;
+    padding: 0;
+    border: solid #dacfcf 1px;
+}
+
+.note-content {
+    padding: 0% 5% 0%;
+}
+
+.entry-container .note-container:first-child {
+    margin-top: 0;
+}
+
+.entry-footer {
+    padding: 0% 5% 1%;
+    background-color: #f2f3f5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: darkgrey
+}
+
+.footer-div {
+    background-color: ghostwhite
+}

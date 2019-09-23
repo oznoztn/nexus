@@ -1,0 +1,168 @@
+﻿.block-color {
+    background-color: #86babc;
+    height: 3px;
+}
+
+.fx {
+    padding-top: 50px;
+    margin-top: 100px;
+    color: #99979c;
+    text-align: center;
+}
+
+.navbar-header {
+    height: 50px;
+}
+
+.btn-link:hover {
+    text-decoration: none;
+}
+
+hr {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.sidenav {
+    height: 100%;
+    max-width: 200px;
+    min-width: 200px;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+.inline-ul {
+    display: inline;
+}
+
+.inline-li {
+    display: inline;
+}
+
+.note-container {
+    margin-top: 30px;
+    padding: 0;
+    border: solid #dacfcf 1px;
+}
+
+.note-content {
+    padding: 0% 5% 0%;
+}
+
+.entry-container .note-container:first-child {
+    margin-top: 0;
+}
+
+.entry-footer {
+    padding: 0% 5% 1%;
+    background-color: #f2f3f5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: darkgrey
+}
+
+p.hidden-title {
+    color: indianred
+}
+
+a.hidden-title {
+    color:indianred
+}
+
+span.hidden-title {
+    color:indianred
+}
+
+a.hidden-title:hover {
+    color:crimson
+}
+
+.footer-div {
+    background-color: ghostwhite
+}
+
+
+/*  Site/Note.cshtml  */
+.note-container {
+    margin-top: 30px;
+    padding: 0;
+    border: solid #dacfcf 1px;
+}
+
+.note-content {
+    padding: 0% 5% 0%;
+}
+
+.entry-container .note-container:first-child {
+    margin-top: 0;
+}
+
+.entry-footer {
+    padding: 0% 5% 1%;
+    background-color: #f2f3f5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: darkgrey
+}
+
+.tags-menu ul {
+    display: inline;
+}
+
+.tags-menu li {
+    display: inline;
+}
+
+div.previousNext a {
+    /*background-color: #2f75b1;*/
+    background-color: #F5F5F5;
+    /*color: white;*/
+    padding: 5px 12px;
+    margin-top: 7px;
+}
+
+div.previousNext a:hover {
+    /*background-color: #5991C1;*/
+    background-color: #F8F8F8;
+}
+
+
+
+/*  Site/Archive.cshtml  */
+.categories ul {
+    margin: 0;
+    list-style-type: none;
+    display: inline;
+}
+
+.categories ul li {
+    margin-left: -30px;
+    margin-right: 35px;
+    list-style-type: none;
+    display: inline-block;
+}
+
+blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 17.5px;
+    border: solid #dacfcf7a 1px;
+    border-left: 5px solid #eee;
+}
+
+/*Site/tagsleftmenupartial.cshtml*/
+.tag-cloud a {
+    /*color: black;*/
+    background-color: whitesmoke;
+    display: inline-block;
+    padding: 2px 10px;
+    /*margin-right: 4px;*/
+    margin-bottom: 6px;
+}

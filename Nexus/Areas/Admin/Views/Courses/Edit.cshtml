@@ -1,0 +1,27 @@
+﻿@model CourseViewModel
+@{
+    ViewData["PageTitle"] = $"Course: \"{Model.Title}\"";
+    ViewData["Title"] = Model.Title;
+    ViewData["OptionalTitle"] = "Edit";
+}
+
+@section PageLevelScripts {
+    <script>
+        $(document).ready(function(){
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_flat-aero',
+                radioClass: 'iradio_flat-aero>'
+            });
+        });
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <form asp-action="Edit" method="post">
+                @{ await Html.RenderPartialAsync("_createUpdateForm", Model); }
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Tuple<TagDto, int>>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@if (Model.Any())
+{
+    <ul class="tag-cloud">
+        @foreach (var tuple in Model)
+        {
+            if (tuple.Item1.IsHidden)
+            {
+                if (HttpContextAccessor.HttpContext.User.IsInRole("Administrator"))
+                {
+                    <li>
+                        <a class="hidden-title" asp-controller="Tags" asp-action="Index" asp-route-slug="@tuple.Item1.Slug">
+                            @tuple.Item1.Title (@tuple.Item2)
+                        </a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li>
+                    <a asp-controller="Tags" asp-action="Index" asp-route-slug="@tuple.Item1.Slug">
+                        @tuple.Item1.Title (@tuple.Item2)
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+}

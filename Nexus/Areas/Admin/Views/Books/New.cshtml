@@ -1,0 +1,66 @@
+﻿@model BookViewModel
+@{
+    ViewData["Title"] = "New";
+    ViewData["OptionalTitle"] = "Add a new book";
+}
+
+@section PageLevelStyles {
+    <style>
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            height: 34px;
+        }
+    </style>
+}
+
+@section PageLevelScripts {
+    <script>
+        $(document).ready(function () {
+            $('#ReadingStatusId').select2({
+                minimumResultsForSearch: Infinity,
+                width: '100%' // solves the bootstrap responsiveness problem
+            }).on("select2:select", function (e) {
+                var selectedValue = $('#ReadingStatusId :selected').text();
+                if (selectedValue === "Read") {
+                    $("#YearFinished").removeAttr("disabled");
+                } else {
+                    var yearFinishedElement = $("#YearFinished");
+                    yearFinishedElement.attr("disabled", "");
+                }
+            });
+        });
+    </script>
+}
+
+@section PageLevelScriptsBottom    {
+    <script type="text/javascript">
+        (function () {
+            document.getElementById("CoverImageFile").onchange = function () {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // get loaded data and render thumbnail.
+                    document.getElementById("coverImagePreview").src = e.target.result;
+                };
+
+                // read the image file as a data URL.
+                reader.readAsDataURL(this.files[0]);
+            };
+        })();
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            @*<div class="box-header with-border">
+                    <h3 class="box-title">@Model.Title</h3>
+                </div>*@
+            <form asp-action="New" method="post" enctype="multipart/form-data">
+                @{ await Html.RenderPartialAsync("_createUpdateForm", Model);}
+            </form>
+        </div>
+    </div>
+</div>

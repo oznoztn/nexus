@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    ViewData["OptionalTitle"] = "List of tags";
+}
+
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Listing</h3>
+        <div class="input-group box-tools">
+            @*<a href="@Url.Action("New", "Courses")" class="btn btn-block btn-default btn-flat"><i class="fa fa-plus-square" style="padding-right: 5px;"></i>Add new</a>*@
+        </div>
+    </div>
+    <div class="box-body">
+        @(Html.Kendo()
+              .Grid<TagViewModel>()
+              .Name("grid")
+              .Editable(conf => conf.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(true))
+              .Columns(columns =>
+              {
+                  columns.Bound(c => c.Title).Width(100);
+                  columns.Bound(c => c.Slug).Width(100);
+                  columns.Bound(c => c.UsageCount).Title("Usage").Width(25);
+                  columns.Bound(c => c.IsHidden).Title("Is Hidden?").Width(50);
+                  columns.Command(commands =>
+                  {
+                      commands.Destroy();
+                      commands.Edit();
+                  }).Width(200).HtmlAttributes(new { style = "text-align: center;" }).HeaderHtmlAttributes(new { style="text-align:center"});
+              })
+              .Pageable(pageable => pageable
+                  .Refresh(true)
+                  .PageSizes(new int[] { 25, 50, 100 })
+                  .ButtonCount(5))
+              .DataSource(dataSource => dataSource
+                  .Ajax()
+                  .Events(c => c.Error("display_grid_errors"))
+                  .PageSize(50)
+                  .Read(read => read.Action("TagsGrid_Read", "Tags"))
+                  .Update(read => read.Action("TagsGrid_Update", "Tags"))
+                  .Destroy(dest => dest.Action("TagsGrid_Destroy", "Tags"))
+                  .Model(conf =>
+                  {
+                      conf.Id(model => model.Id);
+                      conf.Field(td => td.UsageCount).Editable(false);
+                  })
+              ))
+    </div>    
+</div>

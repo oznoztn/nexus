@@ -1,0 +1,24 @@
+﻿@model List<string>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>BrowseNoteImages</title>
+</head>
+<body>
+<ul>
+    @{ int counter = 0;}
+    @foreach (var picUrl in Model)
+    {
+        counter += 1;
+
+        <p><a href="/@picUrl">Picture @counter</a></p>
+    }
+</ul>
+</body>
+</html>

@@ -1,0 +1,117 @@
+﻿@{
+    ViewData["Title"] = "List";
+    ViewData["OptionalTitle"] = "List of categories";
+}
+
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Listing</h3>
+        <div class="input-group box-tools">
+            <a href="@Url.Action("New", "Categories")" class="btn btn-block btn-default btn-flat"><i class="fa fa-plus-square" style="padding-right: 5px;"></i>Add new</a>
+        </div>
+    </div>
+    <div class="box-body">
+        <script id="command-template" type="text/x-kendo-template">
+            <a class="k-button k-grid-even" href=" @Html.ActionLink("Edit", "Edit", "Categories", new { id = 1})">Even</a>
+        </script>
+        @(Html.Kendo().TreeList<CategoryDto>()
+              .Name("treelist")
+              .Columns(columns =>
+              {
+                  columns.Add().Field(c => c.DisplayOrder).Title("Display Order").Width(110);
+                  columns.Add().Field(c => c.Title).Expandable(true);
+                  columns.Add().Field(c => c.IsVisible).Title("Visibility")
+                      .Template("<div style=\"text-align:center\">" +
+                                "# if(IsVisible) {#" +
+                                "<p class='text-light-blue'>Visible</p>" +
+                                "#} else {#" +
+                                "<p class='text-muted'>Invisible</p>" +
+                                "#}#" +
+                                "</div>").Width(100);
+                  columns.Add().Template("<a href='/admin/categories/edit/#=Id#' class='k-button'>Details</a> ").Width(100);
+                  columns.Add().Title("").Command(c =>
+                  {
+                      c.Custom().Name("custom-delete").Text("Delete").Click("treeListItem_OnDelete").ImageClass("k-icon k-i-close");
+                      c.Edit();
+                  });
+              })
+              .DataSource(dataSource => dataSource
+                  .Read(read => read.Action("TreeList_Read", "Categories"))
+                  .Destroy(destroy => destroy.Action("TreeList_Delete", "Categories"))
+                  .Update(update => update.Action("TreeList_Update", "Categories"))
+                  .ServerOperation(false)
+                  .Model(conf =>
+                  {
+                      conf.Id(t => t.Id);
+                      conf.Field(t => t.Title);
+                      conf.ParentId(t => t.ParentId);
+                      conf.Expanded(true);
+                  })
+              ))
+        
+        @(Html.Kendo().Window().Name("ConfirmationWindow")
+              .Title("Delete Confirmation")
+              .Visible(false)
+              .Modal(true)
+              .Draggable(true)
+              .Width(300)
+        )
+
+        <script type="text/x-kendo-template" id="template">
+            <div id="details-container">
+                <em>Are you sure you want to delete <em><strong>#=Title#</strong></em> category?</em>
+
+                <br /><br />
+                <button id="yesButton" class="btn btn-default btn-sm">yes</button>
+                <button id="noButton" class="btn btn-default btn-sm">no</button>
+            </div>
+        </script>
+        <script type="text/javascript">
+            var detailsTemplate = kendo.template($("#template").html());
+            function treeListItem_OnDelete(e) {
+                e.preventDefault();
+
+                var grid = this;
+                var selectedDataModel = grid.dataItem($(e.currentTarget).closest("tr"));
+                var wnd = $("#ConfirmationWindow").data("kendoWindow");
+
+                wnd.content(detailsTemplate(selectedDataModel));
+                wnd.center().open();
+
+                var row = $(e.currentTarget).closest("tr");
+                $("#yesButton").click(function () {
+                    grid.removeRow(row);
+                    wnd.close();
+                });
+
+                $("#noButton").click(function () {
+                    wnd.close();
+                });
+            }
+        </script>
+        <style type="text/css">
+            #details-container {
+                padding: 10px;
+            }
+
+                #details-container em {
+                    color: #8c8c8c;
+                }
+
+            #yesButton {
+                background-color: #4d90fe;
+                background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);
+                background-image: linear-gradient(top,#4d90fe,#4787ed);
+                border: 1px solid #3079ed;
+                color: #fff;
+                width: 33px;
+            }
+
+            #noButton {
+                width: 33px;
+            }
+        </style>
+    </div>
+</div>
+
+

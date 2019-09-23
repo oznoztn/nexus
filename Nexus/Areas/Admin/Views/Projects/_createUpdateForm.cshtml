@@ -1,0 +1,89 @@
+﻿@model ProjectModel
+<div asp-validation-summary="All" class="text-danger"></div>
+<div class="box-body">
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" placeholder="Enter title here" />
+        <span asp-validation-for="Title" class="help-block text-red"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Slug"></label>
+        <input asp-for="Slug" class="form-control" placeholder="Enter title here" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Abstract"></label>
+        <textarea asp-for="Abstract" class="form-control" placeholder="Enter description here"></textarea>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control" placeholder="Enter description here"></textarea>
+    </div>
+    <div class="form-group">
+        <label asp-for="URL"></label>
+        <input asp-for="URL" class="form-control" />
+    </div>
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label>Start Date</label>
+                <select asp-items="Model.Months" asp-for="MonthFrom" class="form-control">
+                    <option selected disabled value="">Month</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select asp-items="Model.YearsFromList" asp-for="YearFrom" class="form-control">
+                    <option selected disabled value="">Year</option>
+                </select>
+            </div>
+        </div>
+        @if (Model.IsOngoingProject)
+        {
+            <div class="col-xs-6">
+                <label id="end-date-label">Present</label>
+                <div class="form-group" style="visibility: collapse">
+                    <select asp-items="Model.Months" asp-for="MonthTo" id="months-to" class="form-control">
+                        <option selected value="">Month</option>
+                    </select>
+                </div>
+                <div class="form-group" style="visibility: collapse">
+                    <select asp-items="Model.YearsToList" asp-for="YearTo" id="years-to" class="form-control">
+                        <option selected value="">Year</option>
+                    </select>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-xs-6">
+                <label id="end-date-label">End Date</label>
+                <div class="form-group">
+                    <select asp-items="Model.Months" asp-for="MonthTo" id="months-to" class="form-control">
+                        <option selected value="">Month</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select asp-items="Model.YearsToList" asp-for="YearTo" id="years-to" class="form-control">
+                        <option selected value="">Year</option>
+                    </select>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="form-group">
+        <label asp-for="IsOngoingProject"></label>
+        <input asp-for="IsOngoingProject" id="ongoing-project-toggle" />
+    </div>
+    <div class="form-group">
+        <label asp-for="IsAvocational"></label>
+        <input asp-for="IsAvocational" />
+    </div>
+    <div class="form-group">
+        <label asp-for="IsVisible"></label>
+        <input asp-for="IsVisible"/>
+    </div>
+</div>
+
+<div class="box-footer">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a asp-action="List" class="btn btn-default">Cancel</a>
+</div>

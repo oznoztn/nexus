@@ -1,0 +1,66 @@
+﻿@model ProjectDto
+@{
+    ViewData["Title"] = $"{Model.Title} - Nexus";
+}
+
+@section PageLevelStyles
+{
+    <link rel="stylesheet" href="~/node/magnific-popup/dist/magnific-popup.css">
+}
+
+@section PageLevelScriptsTop
+{
+}
+
+@section PageLevelScriptsBottom
+{
+    <script src="~/node/magnific-popup/dist/jquery.magnific-popup.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('.popup-gallery').magnificPopup({
+            delegate: 'a',
+            type: 'image',
+            tLoading: 'Loading image #%curr%...',
+            mainClass: 'mfp-img-mobile',
+            gallery: {
+                enabled: true,
+                navigateByImgClick: true,
+                preload: [0,1] // Will preload 0 - before current, and 1 after the current image
+            },
+            image: {
+                tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
+                titleSrc: function(item) {
+                    return item.el.attr('title') + '<small>' + item.el.attr('data-caption') + '</small>';
+                }
+            }
+        });
+    });    
+    </script>
+}
+
+<div>
+    <h3>@Model.Title</h3>
+    <div>
+        @Html.Raw(Model.Description)
+    </div>
+    <div>
+        @if (Model.ProjectPictureDtos != null && Model.ProjectPictureDtos.Any(pp => pp.IsVisible))
+        {
+            <h3>Gallery</h3>
+            <div class="popup-gallery">
+                @foreach (var item in Model.ProjectPictureDtos.Where(t => t.IsVisible).OrderBy(t => t.DisplayOrder).ToArray())
+                {
+                    <a href="@item.FileName" title="@item.Title" data-caption="@item.Caption"><img src="@item.FileName" alt="@item.Title" width="100" height="100"></a>
+                }
+            </div>
+            @*<ul>
+                @foreach (var item in Model.ProjectPictureDtos.Where(t => t.IsVisible).OrderBy(t => t.DisplayOrder).ToArray())
+                {
+                    <li><img class="img-thumbnail image-link" style="width: 200px" src="@item.FileName"/></li>
+                }
+            </ul>*@
+        }
+    </div>
+</div>
+
+

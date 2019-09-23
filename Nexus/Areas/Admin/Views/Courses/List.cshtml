@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "List";
+    ViewData["OptionalTitle"] = "List of courses";
+
+}
+
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Listing</h3>
+        <div class="input-group box-tools">
+            <a href="@Url.Action("New", "Courses")" class="btn btn-block btn-default btn-flat"><i class="fa fa-plus-square" style="padding-right: 5px;"></i>Add new</a>
+        </div>
+    </div>
+    <div class="box-body">
+        @(Html.Kendo().Grid<CourseDto>()
+              .Name("grid")
+              .Editable(conf => conf.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+              .Columns(columns =>
+              {
+                  columns.Bound(c => c.Id).Visible(false);
+                  columns.Bound(c => c.YearFinished).Title("Year").Width(80);
+                  columns.Bound(c => c.Title).Width("160px");
+                  columns.Bound(c => c.Author);
+                  columns.Bound(c => c.Provider);
+                  columns.Bound(c => c.Duration);
+                  columns.Command(commands =>
+                  {
+                      commands.Custom("custom-delete").Text("Delete").Click("treeListItem_OnDelete").IconClass("k-icon k-i-close");                      
+                  }).Width(110);
+                  columns.Bound(c => c.Id).Title(" ").Width(100).ClientTemplate("<a href='/admin/courses/edit/#:Id#' role='button' class='k-button k-button-icontext k-grid-Edit'><span class='k-icon k-i-edit'></span>Edit</a>");
+              })
+              .Scrollable(scr => scr.Height(666))
+              .Sortable()
+              .Pageable(pageable => pageable
+                  .Refresh(true)
+                  .PageSizes(new int[] { 25, 50, 100 })
+                  .ButtonCount(5))
+              .DataSource(dataSource => dataSource
+                  .Ajax()
+                  .Events(e => e.Error("display_grid_errors"))
+                  .PageSize(25)
+                  .Read(read => read.Action("CoursesGrid_Read", "Courses"))
+                  .Destroy(dest => dest.Action("Grid_Delete", "Courses"))
+                  .Model(conf =>
+                  {
+                      conf.Id(model => model.Id);
+                  })
+              ))
+        
+        <!-- #region KENDO DELETE BUTTON -->
+        @(Html.Kendo().Window().Name("ConfirmationWindow")
+                  .Title("Delete Confirmation")
+                  .Visible(false)
+                  .Modal(true)
+                  .Draggable(true)
+                  .Width(300)
+        )
+
+        <script type="text/x-kendo-template" id="template">
+            <div id="details-container">
+                <em>Are you sure you want to delete <em><strong>#=Title#</strong></em>?</em>
+
+                <br /><br />
+                <button id="yesButton" class="btn btn-default btn-sm">yes</button>
+                <button id="noButton" class="btn btn-default btn-sm">no</button>
+            </div>
+        </script>
+        <script type="text/javascript">
+            var detailsTemplate = kendo.template($("#template").html());
+            function treeListItem_OnDelete(e) {
+                e.preventDefault();
+
+                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                var wnd = $("#ConfirmationWindow").data("kendoWindow");
+
+                wnd.content(detailsTemplate(dataItem));
+                wnd.center().open();
+
+                var grid = this;
+                var row = $(e.currentTarget).closest("tr");
+                $("#yesButton").click(function () {
+                    grid.removeRow(row);
+                    wnd.close();
+                });
+
+                $("#noButton").click(function () {
+                    wnd.close();
+                });
+            }
+        </script>
+        <style type="text/css">
+            #details-container {
+                padding: 10px;
+            }
+
+                #details-container em {
+                    color: #8c8c8c;
+                }
+
+            #yesButton {
+                background-color: #4d90fe;
+                background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);
+                background-image: linear-gradient(top,#4d90fe,#4787ed);
+                border: 1px solid #3079ed;
+                color: #fff;
+                width: 33px;
+            }
+
+            #noButton {
+                width: 33px;
+            }
+        </style>
+        <!-- #endregion -->
+    </div>
+</div>

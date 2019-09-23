@@ -1,0 +1,64 @@
+﻿@model IEnumerable<NoteCategoryDto>
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    bool isAdministratorLoggedIn = HttpContextAccessor.HttpContext.User.IsInRole("Administrator");
+}
+
+@if (Model.Any())
+{
+    if (Model.Any(category => category.IsVisible))
+    {
+        // En az bir tane Visible kategori bulunmakta.
+        <div class="tags-menu">
+            Categories:
+            <ul class="inline-ul">
+                @foreach (var category in Model)
+                {
+                    var lastItem = isAdministratorLoggedIn ? Model.Last() : Model.Last(t => t.IsVisible);
+                    bool isLastItem = category.Equals(lastItem);
+                    string comma = isLastItem ? "" : ",";
+
+                    if (category.IsVisible == false)
+                    {
+                        if (isAdministratorLoggedIn)
+                        {
+                            <li class="inline-li">
+                                <a class="hidden-title" asp-controller="category" asp-action="category" asp-route-slug="@category.CategorySlug">@category.CategoryTitle</a>@comma
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="inline-li">
+                            <a asp-controller="category" asp-action="category" asp-route-slug="@category.CategorySlug">@category.CategoryTitle</a>@comma
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        // Ziyaretçiye gösterilecek bir tane bile Visible kategori yok.
+        if (isAdministratorLoggedIn)
+        {
+            <div class="tags-menu">
+                Categories:
+                <ul class="inline-li">
+                    @foreach (var category in Model)
+                    {
+                        <li class="inline-li">
+                            @{
+                                bool lastItem = category.Equals(Model.Last());
+                                string comma = lastItem ? "" : ",";
+                            }
+
+                            <a class="hidden-title" asp-controller="category" asp-action="category" asp-route-slug="@category.CategorySlug">@category.CategoryTitle</a>@comma
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    }
+}
