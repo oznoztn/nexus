@@ -18,7 +18,7 @@ namespace Nexus.Service
         private readonly IRepository<NoteCategory> _noteCategoryRepository;
         private readonly IMapper _mapper;
 
-        public CategoryService(IMapper mapper, ICategoryRepository categoryRepository, IRepository<NoteCategory> noteCategoryRepository) : base(categoryRepository, mapper)
+        public CategoryService(ICategoryRepository categoryRepository, IRepository<NoteCategory> noteCategoryRepository, IMapper mapper) : base(categoryRepository, mapper)
         {
             _categoryRepository = categoryRepository;
             _noteCategoryRepository = noteCategoryRepository;

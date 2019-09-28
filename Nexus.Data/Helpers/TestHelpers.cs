@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
@@ -29,8 +30,9 @@ namespace Nexus.Data.Helpers
             //mockDbSet.Setup(x => x.AsNoTracking()).Returns(mockDbSet.Object);
             //mockDbSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDbSet.Object);
 
+            // TODO: Needs testing
             mockDbSet.As<IAsyncEnumerable<T>>()
-                .Setup(m => m.GetEnumerator())
+                .Setup(m => m.GetAsyncEnumerator(CancellationToken.None))
                 .Returns(new TestAsyncEnumerator<T>(queryableData.GetEnumerator()));
 
             mockDbSet.As<IQueryable<T>>()

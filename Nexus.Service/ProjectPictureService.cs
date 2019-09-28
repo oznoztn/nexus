@@ -45,12 +45,12 @@ namespace Nexus.Service
 
         public void UpdatePictureInformation(ProjectPictureDto projectPictureDto)
         {
-            ProjectPicture entity = projectPictureDto.MapTo<ProjectPicture>();
+            ProjectPicture entity = _mapper.Map<ProjectPicture>(projectPictureDto);
 
             _projectPictureRepository.UpdatePictureInformation(entity);
             _projectPictureRepository.UnitOfWork.SaveChanges();
 
-            projectPictureDto = _mapper.Map<ProjectPictureDto>(entity);
+            _mapper.Map<ProjectPictureDto>(entity);
         }
     }
 }

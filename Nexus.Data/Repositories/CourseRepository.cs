@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Core.Entities;
 using Nexus.Data.Interfaces;
-using Remotion.Linq.Clauses;
 
 namespace Nexus.Data.Repositories
 {

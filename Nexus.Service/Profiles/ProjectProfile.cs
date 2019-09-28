@@ -16,13 +16,24 @@ namespace Nexus.Service.Profiles
                 {
                     if (source.ProjectPictures != null)
                     {
-                        List<ProjectPictureDto> pictureDtos = dest.ProjectPictureDtos.ToList();
+                        var projectPictureDtos = dest.ProjectPictureDtos.ToList();
                         foreach (var projectPicture in source.ProjectPictures.ToArray())
                         {
-                            var pictureDto = projectPicture.MapTo<ProjectPictureDto>();
-                            pictureDtos.Add(pictureDto);
+                            ProjectPictureDto projectPictureDto = new ProjectPictureDto()
+                            {
+                                Id = projectPicture.Id,
+                                ProjectId = projectPicture.ProjectId,
+                                DisplayOrder = projectPicture.DisplayOrder,
+                                FileName = projectPicture.FileName,
+                                Title = projectPicture.Title,
+                                Caption = projectPicture.Caption,
+                                Alt = projectPicture.Alt,
+                                Binary = projectPicture.Binary,
+                                IsVisible = projectPicture.IsVisible
+                            };
+                            projectPictureDtos.Add(projectPictureDto);;
                         }
-                        dest.ProjectPictureDtos = pictureDtos;
+                        dest.ProjectPictureDtos = projectPictureDtos;
                     }
                 });
 

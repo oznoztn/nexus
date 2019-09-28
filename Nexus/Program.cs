@@ -1,18 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper.Configuration;
-using FluentValidation.Internal;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nexus.Identity.Data;
+using Microsoft.Extensions.Hosting;
 using Nexus.Identity.Models;
-using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
-using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
 namespace Nexus
 {
@@ -20,14 +13,16 @@ namespace Nexus
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
+            IHostBuilder webHost = CreateHostBuilder(args);
+            IHost host = webHost.Build();
 
-            SetupDirectories(host.Services.GetService<Microsoft.AspNetCore.Hosting.IHostingEnvironment>());
+            SetupDirectories(host.Services.GetService<IWebHostEnvironment>());
             SetupAdminAccount(host);
+
             host.Run();
         }
 
-        private static void SetupDirectories(Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment)
+        private static void SetupDirectories(IWebHostEnvironment hostingEnvironment)
         {
             string noteImagesDir = Path.Combine(hostingEnvironment.WebRootPath, "images", "notes");
             if (!Directory.Exists(noteImagesDir))
@@ -38,12 +33,14 @@ namespace Nexus
                 Directory.CreateDirectory(projectImagesDir);
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
 
-        private static void SetupAdminAccount(IWebHost host)
+        private static void SetupAdminAccount(IHost host)
         {
             using (IServiceScope serviceScope = host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
@@ -79,7 +76,6 @@ namespace Nexus
                     }
                 }
             }
-
         }
     }
 }

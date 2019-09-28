@@ -9,7 +9,6 @@ namespace Nexus.Service.DTOs
         public int ProjectId { get; set; }
         public int DisplayOrder { get; set; }
         public bool IsVisible { get; set; }
-        public bool IsLogo { get; set; }
         public string Title { get; set; }
         public string Alt { get; set; }
         public string Caption { get; set; }

@@ -23,22 +23,22 @@ namespace Nexus.Areas.Admin.Controllers
     public class ProjectsController : AdminBaseController
     {
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IProjectService _projectService;
         private readonly IProjectPictureService _projectPictureService;
-        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMessageProvider _messageProvider;
 
         public ProjectsController(
-            IMapper mapper,
             IProjectService projectService, 
             IProjectPictureService projectPictureService, 
-            IHostingEnvironment hostingEnvironment,
-            IMessageProvider messageProvider)
+            IMessageProvider messageProvider,
+            IMapper mapper,
+            IWebHostEnvironment webHostEnvironment)
         {
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
             _projectService = projectService;
             _projectPictureService = projectPictureService;
-            _hostingEnvironment = hostingEnvironment;
             _messageProvider = messageProvider;
         }
 
@@ -72,7 +72,7 @@ namespace Nexus.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Edit(ProjectModel model)
         {
-            ValidateProjectMode(model);
+            ValidateProjectModel(model);
             if (ModelState.IsValid)
             {
                 ProjectDto dto = _mapper.Map<ProjectDto>(model);
@@ -102,7 +102,7 @@ namespace Nexus.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult New(ProjectModel model)
         {
-            ValidateProjectMode(model);
+            ValidateProjectModel(model);
             if (ModelState.IsValid)
             {
                 ProjectDto dto = _mapper.Map<ProjectDto>(model);
@@ -114,7 +114,7 @@ namespace Nexus.Areas.Admin.Controllers
                     SetClientSideNotificationMessage(_messageProvider.SuccessMessage(OperationType.Create, "project"));
                     return RedirectToAction("Edit", new { id = dto.Id });
                 }
-             }
+            }
             
             model.Months = GetMonths();
             model.YearsFromList = GetYearsSelectList(DateTime.Now.Year - 30, DateTime.Now.Year);
@@ -180,7 +180,7 @@ namespace Nexus.Areas.Admin.Controllers
                 return Json(new { success = false, error = $"No content found for given id: {projectId}." });
             
             string fileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(imageFile.FileName)}";
-            string pyhsicalDir = Path.Combine(_hostingEnvironment.WebRootPath, "images", "projects");
+            string pyhsicalDir = Path.Combine(_webHostEnvironment.WebRootPath, "images", "projects");
             string fileFullPath = Path.Combine(pyhsicalDir, fileName);
             string fileRelativePath = $"/images/projects/{fileName}";
 
@@ -246,7 +246,7 @@ namespace Nexus.Areas.Admin.Controllers
             return Json(new { success = true });
         }
 
-        private void ValidateProjectMode(ProjectModel model)
+        private void ValidateProjectModel(ProjectModel model)
         {
             if (model.MonthTo.HasValue && model.YearTo.HasValue)
             {

@@ -16,6 +16,27 @@ namespace Nexus.Data.Helpers
             _inner = inner;
         }
 
+        //public object Execute(Expression expression)
+        //{
+        //    return _inner.Execute(expression);
+        //}
+
+        //public TResult Execute<TResult>(Expression expression)
+        //{
+        //    return _inner.Execute<TResult>(expression);
+        //}
+
+        //public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression)
+        //{
+        //    return new TestAsyncEnumerable<TResult>(expression);
+        //}
+
+        //public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
+        //{
+        //    return Task.FromResult(Execute<TResult>(expression));
+        //}
+
+
         public IQueryable CreateQuery(Expression expression)
         {
             return new TestAsyncEnumerable<TEntity>(expression);
@@ -36,33 +57,32 @@ namespace Nexus.Data.Helpers
             return _inner.Execute<TResult>(expression);
         }
 
-        public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression)
+        public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = default)
         {
-            return new TestAsyncEnumerable<TResult>(expression);
-        }
-
-        public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(Execute<TResult>(expression));
+            return Task.FromResult(Execute<TResult>(expression)).Result;
         }
     }
 
     public class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
     {
-        public TestAsyncEnumerable(IEnumerable<T> enumerable)
-            : base(enumerable)
-        { }
+        public TestAsyncEnumerable(IEnumerable<T> enumerable) : base(enumerable)
+        {
+        }
 
         public TestAsyncEnumerable(Expression expression)
-            : base((Expression) expression)
+            : base((Expression)expression)
         { }
 
-        public IAsyncEnumerator<T> GetEnumerator()
+        //public IAsyncEnumerator<T> GetEnumerator()
+        //{
+        //    return new TestAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        //}
+
+        //IQueryProvider IQueryable.Provider => new TestAsyncQueryProvider<T>(this);
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return new TestAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
         }
-
-        IQueryProvider IQueryable.Provider => new TestAsyncQueryProvider<T>(this);
     }
 
     public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
@@ -74,16 +94,18 @@ namespace Nexus.Data.Helpers
             _inner = inner;
         }
 
-        public void Dispose()
-        {
-            _inner.Dispose();
-        }
-
         public T Current => _inner.Current;
 
-        public Task<bool> MoveNext(CancellationToken cancellationToken)
+        public ValueTask DisposeAsync()
         {
-            return Task.FromResult(_inner.MoveNext());
+            var task = new Task(() => _inner.Dispose());
+            ValueTask valTask = new ValueTask(task);
+            return valTask;
+        }
+
+        public ValueTask<bool> MoveNextAsync()
+        {
+            return new ValueTask<bool>(Task.FromResult(_inner.MoveNext()));
         }
     }
 }

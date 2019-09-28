@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using Nexus.Areas.Admin.Models;
 using Nexus.Areas.Admin.Validators;
@@ -34,14 +36,14 @@ namespace Nexus
 {
     public class NexusEnvironment : INexusEnvironment
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public NexusEnvironment(IHostingEnvironment hostingEnvironment)
+        public NexusEnvironment(IWebHostEnvironment webHostEnvironment)
         {
-            _hostingEnvironment = hostingEnvironment;
+            _webHostEnvironment = webHostEnvironment;
         }
 
-        public string NoteImagesRootPath => Path.Combine(_hostingEnvironment.WebRootPath, "images", "notes");
+        public string NoteImagesRootPath => Path.Combine(_webHostEnvironment.WebRootPath, "images", "notes");
 
         public string GetNoteImagesRootPath(string noteId)
         {
@@ -84,13 +86,12 @@ namespace Nexus
     public class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _configuration = configuration;
-            _hostingEnvironment = hostingEnvironment;
-            
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -156,27 +157,39 @@ namespace Nexus
 
             services.AddTransient<IValidator<TagViewModel>, TagViewModelValidator>();
 
+            /*
             // Maintain property names during serialization. See:
             // https://github.com/aspnet/Announcements/issues/194
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
                 .AddFluentValidation();
+            */
 
+            services
+                .AddMvc(options => options.EnableEndpointRouting = false)
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ContractResolver =
+                        new CamelCasePropertyNamesContractResolver();
+                })
+                .AddFluentValidation();
+            
             // Add Kendo UI services to the services container
             services.AddKendo();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
            
-            if (env.IsDevelopment())
+            if (_webHostEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //app.UseDatabaseErrorPage();
             }
             else
             {
@@ -184,6 +197,8 @@ namespace Nexus
             }
 
             // For wwwroot directory
+            //  Core 3.0: If the app calls UseStaticFiles, place UseStaticFiles before UseRouting.
+
             app.UseStaticFiles();
 
             // Add support for node_modules folder
@@ -195,8 +210,22 @@ namespace Nexus
             });
 
             app.UseStatusCodePages();
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            // Core 3.0: If the app uses authentication/authorization features such as AuthorizePage or [Authorize], place the call to UseAuthentication and UseAuthorization: after, UseRouting and UseCors, but before UseEndpoints.
             app.UseAuthentication();
-            
+            app.UseAuthorization();
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Home}/{action=Index}/{id?}");
+            //    endpoints.MapRazorPages();
+            //});
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -233,6 +262,7 @@ namespace Nexus
                     template: "{controller=Notes}/{action=Index}/{id?}");
             });
         }
+
         private void InitIdentity(IServiceCollection services)
         {
             services.AddDbContext<IdentityContext>(options =>
@@ -266,7 +296,7 @@ namespace Nexus
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-                if (_hostingEnvironment.IsDevelopment())
+                if (_webHostEnvironment.IsDevelopment())
                     options.ExpireTimeSpan = TimeSpan.FromHours(1);
                 // If the LoginPath isn't set, ASP.NET Core defaults the path to /Account/Login.
                 options.LoginPath = "/Account/Login";
