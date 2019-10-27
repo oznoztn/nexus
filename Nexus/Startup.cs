@@ -157,20 +157,13 @@ namespace Nexus
 
             services.AddTransient<IValidator<TagViewModel>, TagViewModelValidator>();
 
-            /*
-            // Maintain property names during serialization. See:
-            // https://github.com/aspnet/Announcements/issues/194
-            services.AddMvc()
-                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
-                .AddFluentValidation();
-            */
-
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson(options =>
                 {
-                    options.SerializerSettings.ContractResolver =
-                        new CamelCasePropertyNamesContractResolver();
+                    // Maintain property names during serialization. See:
+                    // https://docs.telerik.com/kendo-ui/knowledge-base/grid-is-not-showing-data
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                 })
                 .AddFluentValidation();
             
