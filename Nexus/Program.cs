@@ -42,7 +42,7 @@ namespace Nexus
 
         private static void SetupAdminAccount(IHost host)
         {
-            using (IServiceScope serviceScope = host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            using (var serviceScope = host.Services.CreateScope())
             {
                 IServiceProvider serviceProvider = serviceScope.ServiceProvider;
 
