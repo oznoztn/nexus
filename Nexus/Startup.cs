@@ -174,11 +174,6 @@ namespace Nexus
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
-           
             if (_webHostEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -188,6 +183,12 @@ namespace Nexus
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            // MSDN: As a general rule, Forwarded Headers Middleware should run before other middleware except diagnostics and error handling middleware.
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             // For wwwroot directory
             //  Core 3.0: If the app calls UseStaticFiles, place UseStaticFiles before UseRouting.
