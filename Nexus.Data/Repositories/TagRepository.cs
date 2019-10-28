@@ -28,27 +28,34 @@ namespace Nexus.Data.Repositories
             var tagsQuery = includeHiddenTags ? Context.Set<Tag>() : Context.Set<Tag>().Where(t => !t.IsHidden);
             var notesQuery = countInvisibleNotes ? Context.Set<Note>() : Context.Set<Note>().Where(no => no.IsVisible);
 
-            // LEFT JOIN -silme belki işe yarar
+            // LINQ queries are no longer evaluated on the client
+            // https://docs.microsoft.com/en-us/ef/core/what-is-new/ef-core-3.0/breaking-changes
             //var query =
             //    from tag in tagsQuery
-            //    join noteTag in _context.Set<NoteTag>() on tag.Id equals noteTag.TagId
-            //    join nt in notesQuery on noteTag.NoteId equals nt.Id into jtable
-            //    from jrow in jtable.DefaultIfEmpty()
-            //    group jrow by tag into grup
+            //    join noteTag in Context.Set<NoteTag>() on tag.Id equals noteTag.TagId
+            //    join nt in notesQuery on noteTag.NoteId equals nt.Id
+            //    group nt by tag into grup
             //    orderby grup.Key.Title
             //    select new Tuple<Tag, int>(grup.Key, grup.Count(nt => nt != null));
+
+            //query = query.OrderByDescending(tuple => tuple.Item2).Take(n);
 
             var query =
                 from tag in tagsQuery
                 join noteTag in Context.Set<NoteTag>() on tag.Id equals noteTag.TagId
-                join nt in notesQuery on noteTag.NoteId equals nt.Id
-                group nt by tag into grup
+                join note in notesQuery on noteTag.NoteId equals note.Id
+                group note by new { noteTag.NoteId, tag.Title, tag.Id, tag.IsHidden, tag.Slug }
+                into grup
                 orderby grup.Key.Title
-                select new Tuple<Tag, int>(grup.Key, grup.Count(nt => nt != null));
+                select new Tuple<Tag, int>(new Tag()
+                {
+                    Id = grup.Key.Id,
+                    Title = grup.Key.Title,
+                    IsHidden = grup.Key.IsHidden,
+                    Slug = grup.Key.Slug
+                }, grup.Count());
 
-            query = query.OrderByDescending(tuple => tuple.Item2).Take(n);
-
-            return query.AsEnumerable();
+            return query.ToArray();
         }
 
         public IEnumerable<Tag> GetTopNTagsWithAtLeastOneNote(int n, bool includeHiddenTags)
