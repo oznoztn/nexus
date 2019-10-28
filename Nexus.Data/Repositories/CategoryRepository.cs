@@ -88,16 +88,25 @@ namespace Nexus.Data.Repositories
                     ? Context.Set<Note>() 
                     : Context.Set<Note>().Where(n => n.IsVisible);
 
-            // category dediğimde neye göre grupluyor, def olarak Id alanına göre mi?
+            // LINQ queries are no longer evaluated on the client
+            // https://docs.microsoft.com/en-us/ef/core/what-is-new/ef-core-3.0/breaking-changes
+            //var query =
+            //    from category in categoriesQuery
+            //    join notecategory in Context.Set<NoteCategory>() on category.Id equals notecategory.CategoryId
+            //    join note in notesQuery on notecategory.NoteId equals note.Id
+            //    orderby category.DisplayOrder
+            //    group notecategory by category into grup
+            //    select new Tuple<Category, int>(grup.Key, grup.Count());
+
             var query =
                 from category in categoriesQuery
                 join notecategory in Context.Set<NoteCategory>() on category.Id equals notecategory.CategoryId
                 join note in notesQuery on notecategory.NoteId equals note.Id
                 orderby category.DisplayOrder
-                group notecategory by category into grup
-                select new Tuple<Category, int>(grup.Key, grup.Count());
+                group notecategory by new { category.Id, category.Title, category.Slug } into grup
+                select new Tuple<Category, int>(new Category { Id = grup.Key.Id, Title = grup.Key.Title, Slug = grup.Key.Slug }, grup.Count());
 
-            return query.AsEnumerable();
+            return query.ToArray();
         }
 
         public IEnumerable<Category> GetInnerCategories(bool includeHiddenCategories)
