@@ -25,15 +25,13 @@ namespace Nexus.Service
         public NoteService(
             IMapper mapper, 
             INoteRepository noteRepository, 
-            ICategoryRepository categoryRepository,
-            ITagRepository tagRepository) : base(noteRepository, mapper)
+            ICategoryRepository categoryRepository) : base(noteRepository, mapper)
         {
             _mapper = mapper;
             _noteRepository = noteRepository;
             _categoryRepository = categoryRepository;
         }
 
-        // TODO: FUCKED UP GENERIC REPO.
         public override NoteDto Get(int id)
         {
             return Get(id, true);
@@ -83,7 +81,7 @@ namespace Nexus.Service
 
         public PagedDtoList<NoteDto> FindNotesByTagSlug(Visibility noteVisibility, string tagSlug, int pageNumber, int pageSize)
         {
-            var pagedNotes = _noteRepository.FindNotesByTag(noteVisibility, tagSlug, pageNumber, pageSize);
+            var pagedNotes = _noteRepository.FindNotesByTagSlug(noteVisibility, tagSlug, pageNumber, pageSize);
 
             return new PagedDtoList<NoteDto>(_mapper, pagedNotes);
         }
