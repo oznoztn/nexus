@@ -177,7 +177,7 @@ namespace Nexus
             if (_webHostEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseDatabaseErrorPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
