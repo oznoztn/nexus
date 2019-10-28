@@ -301,13 +301,13 @@ namespace Nexus.Data.Repositories
                     .Select(note => note.CreationDate);
         }
 
-        public IPagedList<Note> FindNotesByTag(Visibility noteVisibility, string tagSlug, int pageNumber, int pageSize)
+        public IPagedList<Note> FindNotesByTagSlug(Visibility noteVisibility, string tagSlug, int pageNumber, int pageSize)
         {
             var query =
                 from tag in Context.Set<Tag>()
                 join ntag in Context.Set<NoteTag>() on tag.Id equals ntag.TagId
                 join note in GetAllInternal(noteVisibility, true, true) on ntag.NoteId equals note.Id
-                where String.Equals(tag.Slug, tagSlug, StringComparison.InvariantCultureIgnoreCase)
+                where tag.Slug == tagSlug
                 orderby note.CreationDate descending 
                 select note;
 
