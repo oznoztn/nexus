@@ -22,6 +22,6 @@ namespace Nexus.Data.Interfaces
         IPagedList<Note> GetNotesByCategorySlug(Visibility noteVisibility, string categorySlug, int page, int pageSize);
         IPagedList<Note> GetNotes(int year, int month, int page, int pageSize);
         IPagedList<Note> GetNotes(Visibility noteVisibility, bool includeFuturePosts, int page, int pageSize);
-        IPagedList<Note> FindNotesByTag(Visibility noteVisibility, string tagTitle, int pageNumber, int pageSize);
+        IPagedList<Note> FindNotesByTagSlug(Visibility noteVisibility, string tagTitle, int pageNumber, int pageSize);
     }
 }
