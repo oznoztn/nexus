@@ -96,7 +96,6 @@
     <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.js.map" />
     <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.min.js" />
     <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.min.js.map" />
-    <None Include="wwwroot\js\simplePagination.js-master\jquery.simplePagination.js" />
     <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.en-US.min.js" />
     <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.en-US.min.js.map" />
     <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.tr-TR.min.js" />
