@@ -17,15 +17,22 @@
               .Editable(conf => conf.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(true))
               .Columns(columns =>
               {
-                  columns.Bound(c => c.Title).Width(100);
-                  columns.Bound(c => c.Slug).Width(100);
-                  columns.Bound(c => c.UsageCount).Title("Usage").Width(25);
-                  columns.Bound(c => c.IsHidden).Title("Is Hidden?").Width(50);
+                  columns.Bound(c => c.UsageCount).Title("# Usage").Width(25);
+                  columns.Bound(c => c.Title).ClientTemplate("# if(!IsHidden) {#" +
+                                                             "<span class='text-light-blue'>#=Title#</span>" +
+                                                             "#} else {#" +
+                                                             "<span class='text-muted'>#=Title#</span>" +
+                                                             "#}#");
+                  columns.Bound(c => c.Slug).ClientTemplate("# if(!IsHidden) {#" +
+                                                             "<span class='text-light-blue'>#=Slug#</span>" +
+                                                             "#} else {#" +
+                                                             "<span class='text-muted'>#=Slug#</span>" +
+                                                             "#}#");      
                   columns.Command(commands =>
                   {
                       commands.Destroy();
                       commands.Edit();
-                  }).Width(200).HtmlAttributes(new { style = "text-align: center;" }).HeaderHtmlAttributes(new { style="text-align:center"});
+                  }).Width(210).HtmlAttributes(new { style = "text-align: center;" }).HeaderHtmlAttributes(new { style="text-align:center"});
               })
               .Pageable(pageable => pageable
                   .Refresh(true)
