@@ -9,18 +9,18 @@
 }
 
 <div class="navigation-bar">
-    @if (Model.PreviousNote != null)
-    {
-        <a href="/notes/@Model.PreviousNote.Id/@Model.PreviousNote.Slug" class="float-left" title="@Model.PreviousNote.Title">
-            <i class="fas fa-chevron-left"></i>
-            <span>previous post</span>
-        </a>
-    }
     @if (Model.NextNote != null)
     {
         <a href="/notes/@Model.NextNote.Id/@Model.NextNote.Slug" class="float-right" title="@Model.NextNote.Title">
             <span>next post</span>
             <i class="fas fa-chevron-right"></i>
+        </a>
+    }
+    @if (Model.PreviousNote != null)
+    {
+        <a href="/notes/@Model.PreviousNote.Id/@Model.PreviousNote.Slug" class="float-left" title="@Model.PreviousNote.Title">
+            <i class="fas fa-chevron-left"></i>
+            <span>previous post</span>
         </a>
     }
 </div>
