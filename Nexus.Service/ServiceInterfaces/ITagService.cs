@@ -13,8 +13,7 @@ namespace Nexus.Service.ServiceInterfaces
         TagDto GetBySlug(string tag);
         TagDto GetByTitle(string title);
         IEnumerable<TagDto> GetAll();
-        IEnumerable<Tuple<TagDto, int>> GetTagsAlongWithUsageInformation();
-        IEnumerable<Tuple<TagDto, int>> GetTopNTagsAlongWithUsageInfo(int n, bool includeHiddenTags, bool countInvisibleNotes);
+        IEnumerable<Tuple<TagDto, int>> GetTopNTagsAlongWithUsageInfo(bool includeHiddenTags, bool countInvisibleNotes, int n = int.MaxValue);
         IEnumerable<TagDto> GetTopNTagsWithAtLeastOneNote(int n, bool includeHiddenTags);
         void Update(TagDto tagDto);
         void Delete(TagDto tagDto);

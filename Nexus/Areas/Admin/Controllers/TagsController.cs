@@ -31,14 +31,16 @@ namespace Nexus.Areas.Admin.Controllers
 
         public ActionResult TagsGrid_Read([DataSourceRequest] DataSourceRequest request)
         {
-            var tagModels = _tagService.GetTagsAlongWithUsageInformation().Select(tuple => new TagViewModel
-            {
-                Id = tuple.Item1.Id,
-                Slug = tuple.Item1.Slug,
-                Title = tuple.Item1.Title,
-                UsageCount = tuple.Item2,
-                IsHidden = tuple.Item1.IsHidden
-            }).ToArray();
+            var tagModels = _tagService
+                .GetTopNTagsAlongWithUsageInfo(true, true)
+                .Select(tuple => new TagViewModel
+                {
+                    Id = tuple.Item1.Id,
+                    Slug = tuple.Item1.Slug,
+                    Title = tuple.Item1.Title,
+                    UsageCount = tuple.Item2,
+                    IsHidden = tuple.Item1.IsHidden
+                }).ToArray();
 
             return Json(tagModels.ToDataSourceResult(request));
         }

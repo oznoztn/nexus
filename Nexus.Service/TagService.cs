@@ -62,41 +62,7 @@ namespace Nexus.Service
             return dtos;
         }
 
-        public IEnumerable<Tuple<TagDto, int>> GetTagsAlongWithUsageInformation()
-        {
-            IQueryable<NoteTag> noteTags = _context.NoteTags.AsNoTracking().AsQueryable();
-            IQueryable<Tag> tags = _context.Tags.AsNoTracking().AsQueryable();
-
-            //var query =
-            //    (from tag in Tags
-            //    join ntag in NoteTags on tag.Id equals ntag.TagId into joined
-            //    from nt in joined.DefaultIfEmpty()
-            //    group nt by tag.Title into grup 
-            //    select new
-            //    {
-            //        Key = grup.Key,
-            //        NoteCount = grup.Count(t => t != null)
-            //    }).OrderByDescending(t => t.NoteCount);
-            
-            var query =
-                (from tag in tags
-                    join ntag in noteTags on tag.Id equals ntag.TagId into joined
-                    from nt in joined.DefaultIfEmpty()
-                    group nt by tag
-                    into grup
-                    select new Tuple<TagDto, int>(new TagDto
-                    {
-                        Id = grup.Key.Id,
-                        Title = grup.Key.Title,
-                        Slug = grup.Key.Slug,
-                        IsHidden = grup.Key.IsHidden
-                    }, grup.Count(nt => nt != null)))
-                .OrderByDescending(tuple => tuple.Item2);
-
-            return query.AsEnumerable();
-        }
-
-        public IEnumerable<Tuple<TagDto, int>> GetTopNTagsAlongWithUsageInfo(int n, bool includeHiddenTags, bool countInvisibleNotes)
+        public IEnumerable<Tuple<TagDto, int>> GetTopNTagsAlongWithUsageInfo(bool includeHiddenTags, bool countInvisibleNotes, int n = int.MaxValue)
         {
             var tuples = _tagRepository.GetTopNTagsWithUsageInfo(n, includeHiddenTags, countInvisibleNotes).ToList();
 

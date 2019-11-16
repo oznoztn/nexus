@@ -134,7 +134,7 @@
                             if (HttpContextAccessor.HttpContext.User.IsInRole("Administrator"))
                             {
                                 int numberOfTagsSetting = 25;
-                                await Html.RenderPartialAsync("_tagsLeftMenuPartial", TagService.GetTopNTagsAlongWithUsageInfo(numberOfTagsSetting, true, true));
+                                await Html.RenderPartialAsync("_tagsLeftMenuPartial", TagService.GetTopNTagsAlongWithUsageInfo(true, true, numberOfTagsSetting));
                                 //await Html.RenderPartialAsync("_tagsLeftMenuPartialSimple", TagService.GetTopNTagsWithAtLeastOneNote(0, true));
                             }
                             else
