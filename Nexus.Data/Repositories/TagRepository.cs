@@ -44,7 +44,8 @@ namespace Nexus.Data.Repositories
                 from tag in tagsQuery
                 join noteTag in Context.Set<NoteTag>() on tag.Id equals noteTag.TagId
                 join note in notesQuery on noteTag.NoteId equals note.Id
-                group note by new { noteTag.NoteId, tag.Title, tag.Id, tag.IsHidden, tag.Slug }
+                //group tag by new { noteTag.NoteId, tag.Title, tag.Id, tag.IsHidden, tag.Slug }
+                group tag by new { tag.Slug, tag.Title, tag.IsHidden, tag.Id }
                 into grup
                 orderby grup.Key.Title
                 select new Tuple<Tag, int>(new Tag()
@@ -54,8 +55,9 @@ namespace Nexus.Data.Repositories
                     IsHidden = grup.Key.IsHidden,
                     Slug = grup.Key.Slug
                 }, grup.Count());
-
-            return query.ToArray();
+            var result = query.ToArray();
+            
+            return result;
         }
 
         public IEnumerable<Tag> GetTopNTagsWithAtLeastOneNote(int n, bool includeHiddenTags)
