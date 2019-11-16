@@ -18,22 +18,20 @@
               .Name("treelist")
               .Columns(columns =>
               {
-                  columns.Add().Field(c => c.DisplayOrder).Title("Display Order").Width(110);
-                  columns.Add().Field(c => c.Title).Expandable(true);
-                  columns.Add().Field(c => c.IsVisible).Title("Visibility")
-                      .Template("<div style=\"text-align:center\">" +
-                                "# if(IsVisible) {#" +
-                                "<p class='text-light-blue'>Visible</p>" +
-                                "#} else {#" +
-                                "<p class='text-muted'>Invisible</p>" +
-                                "#}#" +
-                                "</div>").Width(100);
-                  columns.Add().Template("<a href='/admin/categories/edit/#=Id#' class='k-button'>Details</a> ").Width(100);
+                  columns.Add().Field(c => c.DisplayOrder).Title("#").Width(75);
+                  columns.Add().Field(c => c.Title).Expandable(true).Template("" +
+                                                                              "# if(IsVisible) {#" +
+                                                                              "<span class='text-light-blue'>#=Title#</span>" +
+                                                                              "#} else {#" +
+                                                                              "<span class='text-muted'>#=Title#</span>" +
+                                                                              "#}#" +
+                                                                              "");
                   columns.Add().Title("").Command(c =>
                   {
-                      c.Custom().Name("custom-delete").Text("Delete").Click("treeListItem_OnDelete").ImageClass("k-icon k-i-close");
+                      c.Custom().Name("custom-delete").Text("Delete").Click("onDeleteButtonClicked").ImageClass("k-icon k-i-close");
                       c.Edit();
-                  });
+                      c.Custom().Name("category-details").Text("Details").Click("onDetailsButtonClicked");
+                  }).Width(300);
               })
               .DataSource(dataSource => dataSource
                   .Read(read => read.Action("TreeList_Read", "Categories"))
@@ -68,7 +66,7 @@
         </script>
         <script type="text/javascript">
             var detailsTemplate = kendo.template($("#template").html());
-            function treeListItem_OnDelete(e) {
+            function onDeleteButtonClicked(e) {
                 e.preventDefault();
 
                 var grid = this;
@@ -87,6 +85,14 @@
                 $("#noButton").click(function () {
                     wnd.close();
                 });
+            }
+
+            function onDetailsButtonClicked(e) {
+                e.preventDefault();
+
+                var grid = this;
+                var selectedDataModel = grid.dataItem($(e.currentTarget).closest("tr"));
+                window.location.href = "/admin/categories/edit/" + selectedDataModel.Id;
             }
         </script>
         <style type="text/css">
