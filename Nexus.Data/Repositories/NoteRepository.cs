@@ -303,6 +303,7 @@ namespace Nexus.Data.Repositories
 
         public IPagedList<Note> FindNotesByTagSlug(Visibility noteVisibility, string tagSlug, int pageNumber, int pageSize)
         {
+            tagSlug = tagSlug.ToLowerInvariant();
             var query =
                 from tag in Context.Set<Tag>()
                 join ntag in Context.Set<NoteTag>() on tag.Id equals ntag.TagId
