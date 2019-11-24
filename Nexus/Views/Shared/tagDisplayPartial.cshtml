@@ -10,7 +10,7 @@
     if (Model.Any(tag => tag.IsHidden == false))
     {
         // En az bir tane Hidden olmayan tag var.
-        <div class="tags-menu">
+        <div class="tags-menu lighter">
             Tags:
             <ul class="inline-ul">
                 @foreach (var tag in Model)
@@ -49,7 +49,7 @@
         // Bir tane bile Hidden olmayan tag yok. Dolayısıyla ziyaretçiye gösterilecek bir tag yok.
         if (isAdministratorLoggedIn)
         {
-            <div class="tags-menu">
+            <div class="tags-menu lighter">
                 Tags:
                 <ul class="inline-ul">
                     @foreach (var tag in Model)

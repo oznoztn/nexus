@@ -36,8 +36,8 @@
     </environment>
     @RenderSection("PageLevelScriptsTop", false)
 
-    <link href="~/lib/prism (2).css" rel="stylesheet" />
-    <script src="~/lib/prism (2).js"></script>
+    @*<link href="~/lib/prism (2).css" rel="stylesheet" />
+    <script src="~/lib/prism (2).js"></script>*@
 
 </head>
 
@@ -45,7 +45,7 @@
     <header>
         <div class="container" style="text-align: center">
             <a class="say-my-name" asp-controller="Notes" asp-action="Index" asp-route-slug="">
-                <h2 class="mt-3">Ozan ÖZTEN</h2>
+                <h2 class="mt-3 myname">Ozan ÖZTEN</h2>
             </a>
             <p class="lead">Notes on <code>programming</code> and other <code>technical</code> stuff.</p>
         </div>
@@ -58,8 +58,8 @@
                     @RenderBody()
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-12">
-                    <div id="categories">
-                        <h5>Categories</h5>
+                    <div id="categories" class="lighter">
+                        <h5 class="lighter">Categories</h5>
                         @{
                             if (HttpContextAccessor.HttpContext.User.IsInRole("Administrator"))
                             {
@@ -71,8 +71,8 @@
                             }
                         }
                     </div>
-                    <div id="tags">
-                        <h5>Tags</h5>
+                    <div id="tags" class="lighter">
+                        <h5 class="lighter">Tags</h5>
                         @{
                             if (HttpContextAccessor.HttpContext.User.IsInRole("Administrator"))
                             {
@@ -86,7 +86,7 @@
                             }
                         }
                     </div>
-                    @*<div id="archive">
+                    @*<div id="archive lighter">
                         <h5>Archive</h5>
                     </div>*@
                 </div>

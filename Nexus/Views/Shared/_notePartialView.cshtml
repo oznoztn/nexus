@@ -7,14 +7,14 @@
 <div class="entry-container" style="margin-bottom: 30px;">
     <div class="note-container">
         <div class="note-content">
-            <h3 class="entry-header">
+            <h3 class="entry-header lighter">
                 @if (Model.IsVisible)
                 {
-                    <a class="entry-header" asp-controller="notes" asp-action="note" asp-route-id="@Model.Id" asp-route-slug="@Model.Slug">@Model.Title</a>
+                    <a class="entry-header lighter" asp-controller="notes" asp-action="note" asp-route-id="@Model.Id" asp-route-slug="@Model.Slug">@Model.Title</a>
                 }
                 else
                 {
-                    <a class="entry-header hidden-title" asp-controller="notes" asp-action="note" asp-route-id="@Model.Id" asp-route-slug="@Model.Slug">@Model.Title</a>
+                    <a class="entry-header lighter hidden-title" asp-controller="notes" asp-action="note" asp-route-id="@Model.Id" asp-route-slug="@Model.Slug">@Model.Title</a>
                 }
                 @{
                     if (HttpContextAccessor.HttpContext.User.IsInRole("Administrator"))
@@ -25,7 +25,7 @@
                     }
                 }
             </h3>
-            <h6>@dateString</h6>
+            <h6 class="lighter">@dateString</h6>
             <p>@Html.Raw(Model.Content)</p>
         </div>
         <div class="entry-footer">

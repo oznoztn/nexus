@@ -1,10 +1,20 @@
-﻿.entry-footer {
+﻿.myname {
+    font-weight: lighter;
+    font-style: italic;
+}
+
+.lighter {
+    font-weight: lighter
+}
+
+.entry-footer {
     background-color: #fbfbfc;
     /*background-color: #f2f3f5;*/
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 13px;
-    color: darkgrey
+    color: darkgrey;
+    font-size: 95%;
 }
 
 a:hover {

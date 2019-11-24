@@ -10,7 +10,7 @@
     if (Model.Any(category => category.IsVisible))
     {
         // En az bir tane Visible kategori bulunmakta.
-        <div class="tags-menu">
+        <div class="tags-menu lighter">
             Categories:
             <ul class="inline-ul">
                 @foreach (var category in Model)
@@ -43,7 +43,7 @@
         // Ziyaretçiye gösterilecek bir tane bile Visible kategori yok.
         if (isAdministratorLoggedIn)
         {
-            <div class="tags-menu">
+            <div class="tags-menu lighter">
                 Categories:
                 <ul class="inline-li">
                     @foreach (var category in Model)
