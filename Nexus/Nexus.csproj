@@ -82,21 +82,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap-grid.css.map" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap-grid.min.css.map" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap-reboot.css.map" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap-reboot.min.css.map" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap.css.map" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\css\bootstrap.min.css.map" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.bundle.js" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.bundle.js.map" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.bundle.min.js" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.bundle.min.js.map" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.js" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.js.map" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.min.js" />
-    <None Include="wwwroot\css\bootstrap-4.2.1\js\bootstrap.min.js.map" />
-    <None Include="wwwroot\js\simplePagination.js-master\jquery.simplePagination.js" />
     <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.en-US.min.js" />
     <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.en-US.min.js.map" />
     <None Include="wwwroot\lib\kendo-ui\js\cultures\kendo.culture.tr-TR.min.js" />
