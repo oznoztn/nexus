@@ -7,7 +7,6 @@ using Nexus.Core;
 using Nexus.Core.Entities;
 using Nexus.Data;
 using Nexus.Data.Interfaces;
-using Nexus.Service.Commands;
 using Nexus.Service.DTOs;
 using Nexus.Service.Extensions;
 using Nexus.Service.GenericService;
