@@ -240,7 +240,6 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#noteTab" data-toggle="tab">Note</a></li>
                 <li><a href="#contentTab" data-toggle="tab">Content</a></li>
-                <li><a href="#imagesTab" data-toggle="tab">Images</a></li>
                 @*<li class="pull-right">
                         <a href="#">Taslağa çevir</a>
                     </li>*@
@@ -343,64 +342,6 @@
                                     <div class="box-body">
                                         <blockquote>
                                             <p>To be able to edit the content, you should save the note first.</p>
-                                        </blockquote>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </section>
-                </div>
-
-                <div class="tab-pane" id="imagesTab">
-                    <section id="new">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="col-md-9">
-                                    <div class="form-group">
-                                        <input type="text" id="txtSearch" placeholder="image file name to look for" class="form-control" />
-                                    </div>
-                                </div>
-                                <div class="col-md-3 pull-right">
-                                    <div class="form-group">
-                                        <button id="buttonSearch" class="btn btn-default">Search</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            @if (Model.Id != 0)
-                            {
-                                <div class="col-md-12">
-                                    <div class="box-body">
-                                        <div class="form-group">
-                                            @*@(Html.Kendo().Grid<PicContainer>()
-                                                .Name("picturesGrid")
-                                                .Columns(columns =>
-                                                {
-                                                    columns.Bound(c => c.FilePath).ClientTemplate("<img src='#=FilePath#'></img>");
-                                                    columns.Bound(c => c.FileName).Visible(false);
-                                                })
-                                                .Scrollable(t => t.Height(1000))
-                                                .AutoBind(false)
-                                                .Pageable(pageable => pageable
-                                                    .Refresh(true)
-                                                    .PageSizes(new int[] {25, 50, 100})
-                                                    .ButtonCount(5))
-                                                .DataSource(dataSource => dataSource
-                                                    .Ajax()
-                                                    .PageSize(50)
-                                                    .Read(read => read.Action("NotePictures_Read", "Notes", new {noteId = Model.Id}))
-                                                ))*@
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="col-md-12">
-                                    <div class="box">
-                                        <blockquote>
-                                            <p>To be able to view and replace the pictures, you should save the note first.</p>
                                         </blockquote>
                                     </div>
                                 </div>
