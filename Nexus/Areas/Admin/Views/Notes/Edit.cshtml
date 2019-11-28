@@ -240,9 +240,9 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#noteTab" data-toggle="tab">Note</a></li>
                 <li><a href="#contentTab" data-toggle="tab">Content</a></li>
-                @*<li class="pull-right">
-                        <a href="#">Taslağa çevir</a>
-                    </li>*@
+                <li class="pull-right">
+                    <a class="pull-right" style="color: #ec8a9c;" asp-area="" asp-controller="Notes" asp-action="Note" asp-route-id="@Model.Id" asp-route-slug="@Model.Slug" target="_blank">View Note</a>
+                </li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="noteTab">
@@ -311,7 +311,6 @@
                                     <div class="box-footer">
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                         <a class="btn btn-default" asp-controller="Notes" asp-action="List">Cancel</a>
-                                        <a class="btn btn-default flat pull-right" asp-area="" asp-controller="Notes" asp-action="Note" asp-route-id="@Model.Id" asp-route-slug="@Model.Slug" target="_blank">View note</a>
                                     </div>
                                 </form>
                             </div>
