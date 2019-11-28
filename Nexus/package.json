@@ -4,7 +4,9 @@
   "private": true,
   "devDependencies": {},
   "dependencies": {
-    "bootstrap": "3.3.7",
+    "bootstrap3": "npm:bootstrap@^3.4.1",
+    "bootstrap4": "npm:bootstrap@^4.4.1",
+    "admin-lte": "2.4.18",
     "@fortawesome/fontawesome-free": "5.9.0",
     "icheck": "1.0.2",
     "jquery": "3.3.1",
