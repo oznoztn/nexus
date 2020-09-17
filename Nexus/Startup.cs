@@ -98,45 +98,45 @@ namespace Nexus
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IViewRenderService, ViewRenderService>();
+            services.AddTransient<IViewRenderService, ViewRenderService>();
 
             services.AddSingleton<IMessageProvider, MessageProvider>();
 
-            services.AddScoped<NexusContext>();
-            services.AddScoped<DbContext, NexusContext>();
+            services.AddTransient<NexusContext>();
+            services.AddTransient<DbContext, NexusContext>();
 
-            services.AddScoped<ISettingsService, SettingsService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IBookService, BookService>();
-            services.AddScoped<ICourseService, CourseService>();
-            services.AddScoped<INoteService, NoteService>();
-            services.AddScoped<ITagService, TagService>();
-            services.AddScoped<INoteTagService, NoteTagService>();
-            services.AddScoped<IProjectService, ProjectService>();
-            services.AddScoped<IProjectPictureService, ProjectPictureService>();
+            services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IBookService, BookService>();
+            services.AddTransient<ICourseService, CourseService>();
+            services.AddTransient<INoteService, NoteService>();
+            services.AddTransient<ITagService, TagService>();
+            services.AddTransient<INoteTagService, NoteTagService>();
+            services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<IProjectPictureService, ProjectPictureService>();
 
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IBookRepository, BookRepository>();
-            services.AddScoped<ICourseRepository, CourseRepository>();
-            services.AddScoped<INoteRepository, NoteRepository>();
-            services.AddScoped<INoteTagRepository, NoteTagRepository>();
-            services.AddScoped<ITagRepository, TagRepository>();
-            services.AddScoped<IProjectRepository, ProjectRepository>();
-            services.AddScoped<IProjectPictureRepository, ProjectPictureRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IBookRepository, BookRepository>();
+            services.AddTransient<ICourseRepository, CourseRepository>();
+            services.AddTransient<INoteRepository, NoteRepository>();
+            services.AddTransient<INoteTagRepository, NoteTagRepository>();
+            services.AddTransient<ITagRepository, TagRepository>();
+            services.AddTransient<IProjectRepository, ProjectRepository>();
+            services.AddTransient<IProjectPictureRepository, ProjectPictureRepository>();
 
-            services.AddScoped<IRepository<Category>, Repository<Category>>();
-            services.AddScoped<IRepository<BookCategory>, Repository<BookCategory>>();
-            services.AddScoped<IRepository<CourseCategory>, Repository<CourseCategory>>();
-            services.AddScoped<IRepository<NoteCategory>, Repository<NoteCategory>>();
-            services.AddScoped<IRepository<Book>, Repository<Book>>();
-            services.AddScoped<IRepository<Course>, Repository<Course>>();
-            services.AddScoped<IRepository<Note>, Repository<Note>>();
-            services.AddScoped<IRepository<Tag>, Repository<Tag>>();
-            services.AddScoped<IRepository<NoteTag>, Repository<NoteTag>>();
-            services.AddScoped<IRepository<Project>, Repository<Project>>();
-            services.AddScoped<IRepository<ProjectPicture>, Repository<ProjectPicture>>();
+            services.AddTransient<IRepository<Category>, Repository<Category>>();
+            services.AddTransient<IRepository<BookCategory>, Repository<BookCategory>>();
+            services.AddTransient<IRepository<CourseCategory>, Repository<CourseCategory>>();
+            services.AddTransient<IRepository<NoteCategory>, Repository<NoteCategory>>();
+            services.AddTransient<IRepository<Book>, Repository<Book>>();
+            services.AddTransient<IRepository<Course>, Repository<Course>>();
+            services.AddTransient<IRepository<Note>, Repository<Note>>();
+            services.AddTransient<IRepository<Tag>, Repository<Tag>>();
+            services.AddTransient<IRepository<NoteTag>, Repository<NoteTag>>();
+            services.AddTransient<IRepository<Project>, Repository<Project>>();
+            services.AddTransient<IRepository<ProjectPicture>, Repository<ProjectPicture>>();
 
-            services.AddScoped<INexusEnvironment, NexusEnvironment>();
+            services.AddTransient<INexusEnvironment, NexusEnvironment>();
 
             InitIdentity(services);
 
