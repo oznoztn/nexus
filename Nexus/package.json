@@ -12,7 +12,7 @@
     "jquery": "3.5.0",
     "jquery-ui": "1.12.1",
     "jquery-ui-dist": "1.12.1",
-    "jquery-validation": "1.17.0",
+    "jquery-validation": "1.19.3",
     "jquery-validation-unobtrusive": "3.2.10",
     "select2": "4.0.5",
     "toastr": "2.1.4",
